@@ -1,0 +1,140 @@
+[[section-building-block-view]]
+== Bausteinsicht
+
+=== Ebene 1
+
+Hier die Bausteinsicht der Applikation im technischen Kontext (C4 - Ebene 1). Vergleiche hierzu <<Fachlicher Context>>
+
+.Bausteinsicht - Ebene 1
+[plantuml, target=Bausteinsicht-C4-Ebene1, format=png]
+....
+@startuml
+!include  <C4/C4_Context.puml>
+
+title Context Diagramm für CheckYourWork
+
+Person(Student, Student, "Hochladen von Quellcode")
+Person(Professor, Professor, "Definition der Abgabekriterien")
+Person(Auditor, Auditor + Admin, "Durchführen des Audits")
+
+System(CheckYourWork, "CheckYourWork", "WebApplication")
+System_Ext(LMS, "LMS", "bestehendes System der Universität")
+System_Ext(TurnItIn, "TurnItIn", "Webbasiertes System zur Plagiatsprüfung")
+System_Ext(CloudProvider, "CloudProvider", "Ausführung des Codes in Sandbox-Container")
+
+Rel_D(Student, CheckYourWork, HTTPS)
+Rel_D(Professor, CheckYourWork, HTTPS)
+Rel_D(Auditor, CheckYourWork, HTTPS)
+
+Rel_U(LMS, CheckYourWork, HTTPS)
+BiRel_D(CheckYourWork, TurnItIn, HTTPS)
+BiRel_D(CheckYourWork, CloudProvider, HTTPS)
+
+SHOW_LEGEND()
+
+@enduml
+....
+
+=== Ebene 2
+
+Hier ein Überblick über die Teilkomponenten des Systems (C4 - Ebene 2).
+
+.Bausteinsicht - Ebene 2
+[plantuml, target=Bausteinsicht-C4-Ebene2, format=png]
+....
+@startuml
+!include <C4/C4_Context.puml>
+!include <C4/C4_Container.puml>
+
+title Bausteinsicht für CheckYourWork (Ebene 2)
+
+Person(user, <<Benutzer>>)
+
+System_Boundary(Remote, "CheckYourWork") {
+    Container(Core, "Core", "WebApplication")
+    Container(Auth, "Berechtigungsprüfung", Prüfung Anmeldedaten / Delegation an LMS)
+    Container(Audit, "Audit", Bereitstellen Audit-Daten)
+    Container(cc, "CodeChecker", Prüfung des Codes)
+    ContainerDb(DB, "Relationale Datenbank", "SQL")
+}
+
+System_Ext(LMS, "LMS", "bestehendes System der Universität")
+System_Ext(TurnItIn, "TurnItIn", "Webbasiertes System zur Plagiatsprüfung")
+System_Ext(CloudProvider, "CloudProvider", "Ausführung des Codes in Sandbox-Container")
+
+Rel_D(user, Core, HTTPS)
+
+BiRel_D(Core, Auth, benutzt)
+BiRel_D(Core, cc, benutzt)
+BiRel_D(Core, Audit, benutzt)
+BiRel_D(Core, DB, Datenhaltung)
+Rel_L(DB, Audit, Audit-Daten)
+Rel_L(cc, DB, Ergebnis)
+
+Rel_U(LMS, Auth, HTTPS)
+BiRel_D(cc, TurnItIn, HTTPS)
+BiRel_D(cc, CloudProvider, HTTPS)
+
+SHOW_LEGEND()
+
+@enduml
+....
+
+.Komponenten im System
+[cols="1,3"]
+|===
+|Komponente|Zweck
+
+|Core|Kernkomponente, übernimmt die Datenhaltung zur DB, orchestriert die anderen Komponenten, stellt Oberfläche dar
+|Berechtigungsprüfung|prüft Berechtigungen gegen LMS
+|CodeChecker|kümmert sich um die Prüfung und Bewertung des hochgeladenen Quellcodes
+|Audit|Komponente, welche die Audit-Daten erzeugt und ausleitet
+|Datenbank|hält die Daten
+|===
+
+=== Ebene 3 - Komponente CodeChecker [[ch5-buildingblock-view-ebene3]]
+
+Bei diesem Entwurf wird jeder Teilaspekt der Codeprüfung (Metriken, Plagiatsprüfung intern und extern, statische Codeprüfung, etc.) in seiner eigenen Teilkomponente abgebildet.
+
+Das Laufzeitverhalten wird hier erläutert: <<ch06-laufeit-codechecker>>
+
+.Bausteinsicht - Ebene 3
+[plantuml, target=Bausteinsicht-C4-Ebene3-CodeChecker, format=png]
+....
+@startuml
+!include <C4/C4_Context.puml>
+!include <C4/C4_Container.puml>
+
+title Bausteinsicht für die Komponente 'CodeChecker' (Ebene 3)
+
+System(Core, "Core", "WebApplication")
+
+System_Boundary(Remote, "CodeChecker") {
+    Container(cc, "CodeCheckerCore", Orchestrierung der Code-Prüfung)
+    Container(met, "MetricChecker", Prüfung der Code-Metriken)
+    Container(scc, "StaticCodeChecker", statische Prüfung des Codes)
+    Container(ipp, "InternePlagiatsPrüfung", "interne Plagiats Prüfung")
+    Container(epp, "ExternePlagiatsPrüfung", "externe Plagiats Prüfung")
+    Container(dcc, "DynamicCodeChecker", dynamische Prüfung des Codes)
+}
+
+ContainerDb(DB, "Relational Database", "SQL")
+System_Ext(TurnItIn, "TurnItIn", "Webbasiertes System zur Plagiatsprüfung")
+System_Ext(CloudProvider, "CloudProvider", "Ausführung des Codes in Sandbox-Container")
+
+BiRel_D(cc, scc, "benutzt")
+BiRel_R(cc, dcc, "benutzt")
+Rel_D(scc, met, "Aufruf")
+Rel_D(scc, ipp, "Aufruf")
+Rel_D(scc, epp, "Aufruf")
+BiRel_D(Core, cc, benutzt)
+Rel_D(cc, DB, Ergebnis der Code-Prüfung)
+Rel_D(ipp, DB, Vergleich mit anderen Code-Snippets)
+
+BiRel_D(epp, TurnItIn, HTTPS)
+BiRel_R(dcc, CloudProvider, HTTPS)
+
+SHOW_LEGEND()
+
+@enduml
+....

@@ -1,0 +1,6 @@
+[[section-architecture-constraints]]
+== Randbedingungen
+
+* Das bestehende mainframe-basierte System 'Leaning Management System' `LMS` soll integriert werden.
+* Der Quellcode wird gegen einen externen, web-basierten Service `TurnItIn` geprüft.
+* Aus Kostengründen werden verstärkt kostenfreie bzw. günstige Komponenten/Frameworks verwendet und auf teure Kaufsoftware oder Komponenten verzichtet.

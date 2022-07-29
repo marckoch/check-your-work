@@ -1,0 +1,44 @@
+[[section-introduction-and-goals]]
+== Einführung und Ziele
+
+=== Aufgabenstellung
+
+Mit der Applikation `CheckYourWork` werden einfache Programmieraufgaben automatisch geprüft und bewertet.
+Der Quellcode, der die Programmieraufgabe löst, wird vom Studenten hochgeladen und vom System ausgeführt.
+Ebenfalls erfolgt eine interne und externe Plagiatsprüfung des Quellcodes.
+Der Quellcode, sowie das Ergebnis der Ausführung und die Ergebnisse der Prüfungen werden in auditierbarer Form persistiert.
+
+=== Verwandte Systeme
+
+Ähnliche Anwendungen gibt es z.B. bei https://hyperskill.org[JetBrainsAcademy], https://www.codewars.com[Codewars], https://www.hackerrank.com[Hackerrank].
+Dort kann der Anwender ebenfalls Code hochladen (oder auch -- anders als hier geplant -- im Browser schreiben), welcher dann ebenfalls ausgeführt, geprüft und bewertet wird.
+Typische Roundtrip-Zeiten (Quellcode hochladen->Laufen lassen->Ergebnis einsehen) liegen in diesen Anwendungen bei ca. 20-60 Sekunden.
+
+=== Qualitätsziele
+
+.Die wichtigsten Ziele
+[cols="1,1,6"]
+|===
+|Nr.|Ziel|Erläuterung
+
+|1|Persistenz|Der hochgeladene Quellcode samt Ausführungsergebnis und Benotung soll persistiert werden
+|2|Auditierbarkeit|Die Daten müssen unveränderbar hinterlegt werden
+|3|Sicherheit|Es muss verhindert werden, dass der hochgeladene Quellcode in ungesicherten Umgebungen läuft und diese korrumpiert oder Zugriff auf die gespeicherten Daten erhält
+|===
+
+NOTE: 1 und 2 ergeben sich direkt aus der Anforderung. Nr. 3 und die Reihenfolge ist meine Annahme.
+
+=== Stakeholder
+
+.Stakeholder
+[cols="1,3"]
+|===
+|Stakeholder|Erwartung
+
+|Universität|Zeit- und Kostenersparnis bei der Bewertung der Aufgaben, Budgetfreundliche Gesamtlösung
+|Professoren|Benutzerkomfort, Zeitersparnis
+|Auditor|Zugang zu Export der Audit-Daten, Vertrauen auf Unveränderbarkeit der Daten
+|Studenten|Verfügbarkeit der Anwendung, zeitnahe Bewertung der hochgeladenen Arbeit
+|Administrator|stösst den Export der Audit-Daten an, pflegt BasisImage und Treibercode
+
+|===

@@ -1,0 +1,57 @@
+= Architektur Check Your Work
+:note-caption: Hinweis
+:figure-caption: Abbildung
+:table-caption: Tabelle
+:xrefstyle: full
+:toc:
+:toc-title: Inhaltsverzeichnis
+:numbered:
+:imagesdir: ./images
+
+<<<
+// 1. Anforderungen und Ziele
+include::chapter/01_introduction_and_goals.adoc[]
+
+// 2. Randbedingungen
+<<<
+include::chapter/02_architecture_constraints.adoc[]
+
+<<<
+// 3. Kontextabgrenzung
+include::chapter/03_system_scope_and_context.adoc[]
+
+<<<
+// 4. Lösungsstrategie
+include::chapter/04_solution_strategy.adoc[]
+
+<<<
+// 5. Bausteinsicht
+include::chapter/05_building_block_view.adoc[]
+
+<<<
+// 6. Laufzeitsicht
+include::chapter/06_runtime_view.adoc[]
+
+<<<
+// 7. Verteilungssicht
+include::chapter/07_deployment_view.adoc[]
+
+<<<
+// 8. Konzepte
+include::chapter/08_concepts.adoc[]
+
+<<<
+// 9. Architekturentscheidungen
+include::chapter/09_architecture_decisions.adoc[]
+
+<<<
+// 10. Qualitätsszenarien
+include::chapter/10_quality_requirements.adoc[]
+
+<<<
+// 11. Risiken
+include::chapter/11_technical_risks.adoc[]
+
+<<<
+// 12. Glossar
+include::chapter/12_glossary.adoc[]

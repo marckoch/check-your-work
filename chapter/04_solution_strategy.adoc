@@ -1,0 +1,36 @@
+[[section-solution-strategy]]
+== Lösungsstrategie
+
+[cols="1,4,1"]
+|===
+|Aspekt|Lösung|siehe
+
+|Sicherheit
+|Der hochgeladene Quellcode wird bei einem externen CloudProvider in einem eigens dafür provisionierten Container ("Sandbox") compiliert und ausgeführt.
+So ist sichergestellt, dass kein Zugriff von diesem Quellcode auf das Produktivsystem und/oder die Datenbank erfolgen kann.
+|<<ch08-codeausfuehrung>>
+
+|Auditierbarkeit
+|Die gespeicherten Daten werden beim Speichern vollumfänglich aufgelöst, d.h. sämtliche Referenzen ausgehend vom Hauptdatensatz ("Ausführung") werden aufgelöst
+(Snapshot aller referenzierten Daten zum Zeitpunkt der Codeausführung).
+Die Zugriffsrechte auf die Datenbank werden so eingeschränkt, dass einmal gespeicherte Datensätze im Nachhinein nicht verändert werden können.
+|<<ch08-auditierbarkeit>>
+
+| Plagiatsprüfung
+|Die Plagiatsprüfung erfolgt in zwei Stufen: intern und extern.
+Bei der internen Plagiatsprüfung wird die hochgeladene Lösung mit anderen Lösungen zur selben Aufgabe verglichen.
+Bei der externen Plagiatsprüfung wird die Lösung gegen den externen Anbieter `TurnItIn` verglichen.
+|<<ch08-interne-plagiatspruefung>>
+<<ch08-turnitin>>
+
+|Datenstruktur
+|Das Ergebnis der Codeausführung enthält überwiegend unstrukturierte, schemalose, nicht relationale Textdaten.
+Daher wird das Ergebnis einer Codeausführung als Document in einer NoSQL-Datenbank gespeichert.
+
+(*TODO*: oder doch im PostgresQL? mit Datentyp `jsonb`? )
+|f
+
+|Anmeldung am System
+|Beim Anmelden ans System `CheckYourWork` wird ein Weiterleiten an `LMS` durchgeführt, d.h. im `CheckYourWork` selber werden keinerlei Benutzerdaten der Anwender gespeichert.
+|<<ch08-authentisierung>>
+|===

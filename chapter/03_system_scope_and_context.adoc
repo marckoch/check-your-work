@@ -1,0 +1,123 @@
+[[section-system-scope-and-context]]
+== Fachlicher Context
+
+Folgendes Diagram zeigt den fachlichen Context mit allen Aktoren und allen externen Schnittstellensystemen.
+
+.Fachlicher Context
+[plantuml, target=fachlicher-context, format=png]
+....
+@startuml
+left to right direction
+actor "Student" as s
+actor "Professor" as p
+actor "Administrator" as admin
+actor "Auditor" as a
+
+rectangle CheckYourWork #LightBlue {
+usecase "Quellcode" as CYW.code
+usecase "Metriken und Tests" as CYW.metriken
+usecase "Auditdaten" as CYW.audit
+}
+rectangle LMS {
+usecase "Kursunterlagen + Aufgaben" as LMS.daten
+}
+rectangle TurnItIn {
+usecase "Plagiatsprüfung" as TII.plag
+}
+rectangle CloudProvider {
+usecase "Sandbox/Container" as CP.sandbox
+}
+file Auditdaten
+
+
+s ---> LMS.daten : sieht an
+s --> CYW.code : hochladen
+p --> CYW.metriken : definieren
+CYW.code --> CP.sandbox : ausführen in
+CYW.code --> TII.plag : durchläuft
+
+admin --> CYW.audit : triggert Export
+CYW.audit --> Auditdaten : exportiert
+a -l-> Auditdaten : sieht ein
+
+@enduml
+....
+
+* Aktoren: Student, Professor, Auditor, Administrator
+* externe Systeme: LMS, TurnItIn, CloudProvider
+
+
+=== Funktionale Anforderungen
+
+NOTE: Ich bin mir nicht sicher, ob detailliertere UseCases hier hingehören.
+Für das Gesamtverständnis finde ich sie aber förderlich.
+Daher möchte ich den Benutzungsablauf aus Sicht der beteiligten Aktoren hier etwas detaillierter darstellen.
+In einem echten Projekt ist dies Teil der Requirements-Analyse (bzw. Lastenheft o.ä.)
+
+==== Aus Sicht des Studenten
+
+*Annahme*: Folgende Punkte erfolgen *nicht* in dieser Anwendung `CheckYourWork`:
+
+* Student schaut Aufgabe im `LMS` an
+* Student schreibt Quellcode zur Aufgabe (auf seinem privaten Rechner in der IDE seiner Wahl, *nicht* im Browser in dieser Anwendung)
+
+*Ablauf* im `CheckYourWork` nun:
+
+* Student meldet sich an (Abgleich gegen `LMS`)
+* der Student wählt die Aufgabe, zu der er eine Lösung hochladen möchte
+* ist das Abgabedatum für diese Aufgabe bereits überschritten, ist kein Upload mehr möglich->Ende
+* der Student lädt den Quellcode zu der gewählten Aufgabe hoch
+* Quellcode durchläuft die dynamische CodeAnalyse, d.h. wird in passender Sandbox ausgeführt, dabei Ausgaben/Tests geprüft
+* Quellcode durchläuft die statische CodeAnalyse, d.h.:
+** Quellcode wird gegen Metriken geprüft
+** Quellcode durchläuft die interne Plagiatsprüfung (Vergleich gegen andere Lösungen anderer Studenten)
+** Quellcode durchläuft die externe Plagiatsprüfung (Vergleich gegen Fremdsystem `TurnItIn`)
+* Quellcode wird benotet
+* Quellcode, Ausführung und Ergebnis werden auditierbar gespeichert
+* das Ergebnis wird dem Studenten (nicht editierbar) angezeigt: Bewertung, Metriken, Testergebnisse
+* Student kann weitere Versuche hochladen (selber Ablauf wie vorher)
+* Am Ende sind alle Versuche des Studenten zu dieser Aufgabe auditierbar festgehalten
+* der Student kann einmal hochgeladenen Code nicht mehr ändern oder löschen
+
+*Annahme*: Die Prüfung des Quellcodes geht schnell (<60 sek) und der Student bekommt synchron Feedback. So kann er zeitnah Nacharbeiten/Verbesserungen vornehmen und einen erneuten Versuch hochladen
+
+==== Aus Sicht des Professors
+
+*Annahmen*:
+
+* Die Aufgaben/Kursunterlagen sind im `LMS` hinterlegt
+* Zuordnung Studenten zu Kurs sind im `LMS` hinterlegt
+* Zugangsdaten des Professors sind im `LMS` hinterlegt
+
+*Ablauf* (im neuen System `CheckYourWork`):
+
+* Professor meldet sich an (Abgleich gegen `LMS`)
+* Professor legt fest:
+** welche Aufgabe aus dem `LMS`
+** für welchen Kurs (und damit indirekt für welche Studenten)
+** bis wann (Abgabedatum/zeit)
+** mit welchen Abnahmekriterien (Metriken / Tests)
+
+gelöst werden soll.
+
+Dies könnte sinngemäss etwa so aussehen:
+
+****
+Alle Studenten des Kurses 'Python für Fortgeschrittene - WinterSemester2022' sollen bis 24.9.2022 15:00Uhr die Aufgaben PFF-18, PFF-19 und PFF-20 (referenziert Aufgaben aus `LMS`) lösen. Dabei ist zu beachten:
+
+* Bei Aufgabe PFA-18 bitte nicht mehr als 20 Lines of code und
+* bei PFA-19 eine Lösung mit Rekursion schreiben, d.h. ohne Schleifen (while/for)
+****
+Im Grunde genommen eine einfache CRUD-Anwendung, d.h. der Professor kann Daten auch nochmal ändern.
+
+==== Aus Sicht des Auditors bzw. des Administrators
+
+NOTE: Hier ist unklar, wie der Ablauf erfolgen soll. Soll der Auditor Zugang zur Datenbank bekommen und kann dort dann die Daten prüfen? Oder erwartet er einen Export? Wenn ja in welchem Format? Excel? CSV? JSON? XML? Hier gibt es sicherlich rechtliche Vorgaben, in welcher Form ein Audit ablaufen soll.
+
+*Annahme*: Ein Export als EXCEL reicht aus. Der Auditor erhält *keinen* Zugang zur Datenbank oder zur Anwendung.
+
+* Es wird ein Audit von den Auditoren angekündigt (unter Angabe der Rahmenbedingungen, d.h. Audit für den Jahrgang X und / oder alle Studenten, die den Kurs Y besucht haben)
+* Ein Administrator der Anwendung `CheckYourWork` triggert den Export der Audit-Daten
+* Die Audit-Daten werden vom System im EXCEL-Format exportiert und vom Administrator heruntergeladen
+* Der Adminstrator übergibt diese Datei dem Auditor
+* Der Auditor nimmt diese exportierten Daten entgegen und führt das Audit durch

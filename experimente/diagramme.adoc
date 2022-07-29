@@ -1,0 +1,270 @@
+
+.Fachlicher Context
+[plantuml, target=fachlicher-context, format=png]
+....
+@startuml
+left to right direction
+actor "Student" as s
+actor "Professor" as p
+actor "Auditor" as a
+
+rectangle CheckYourWork #LightBlue {
+usecase "Code" as CYW.code
+usecase "Metriken und Tests" as CYW.metriken
+usecase "Auditdaten" as CYW.audit
+}
+rectangle LMS {
+usecase "Kursunterlagen + Aufgaben" as LMS.daten
+}
+rectangle TurnItIn {
+usecase "Plagiatsprüfung" as TII.plag
+}
+rectangle CloudProvider {
+usecase "Sandbox/Container" as CP.sandbox
+}
+
+s ---> LMS.daten : sieht an
+s --> CYW.code : hochladen
+p --> CYW.metriken : definieren
+a --> CYW.audit : sieht ein
+CYW.code --> CP.sandbox : ausführen in
+CYW.code --> TII.plag : durchläuft
+@enduml
+....
+
+
+Hier ein Überblick über die Teilkomponenten des Systems (C4 - Ebene 2).
+
+.Bausteinsicht
+[plantuml, target=technischer-context, format=png]
+....
+@startuml
+left to right direction
+frame CheckYourWork {
+component Core
+component Berechtigungsprüfung as b
+component Metriken as met
+component CodeExecutor as cex
+component PlagiatsPrüfer as pp
+component Report
+database Datenbank as DB
+}
+
+file Auditdaten
+
+frame TurnItIn {
+node PlagiatsPrüfer as tii.pp
+}
+
+cloud CloudProvider {
+node Sandbox
+}
+
+frame LMS {
+component Benutzerdaten as LMS.bd
+}
+
+Core <--> DB
+DB --> Report
+Core <---> b
+Core <---> pp
+Core <--> cex
+cex <--> met
+b <--> LMS.bd : HTTPS
+Report --> Auditdaten
+pp <--> tii.pp : HTTPS
+cex <---> Sandbox : HTTPS
+
+@enduml
+....
+
+.Komponenten im System
+[cols="1,3"]
+|===
+|Komponente|Zweck
+
+|Core|Kernkomponente, übernimmt die Datenhaltung zur DB, orchestriert die anderen Komponenten
+|Berechtigungsprüfung|prüft Berechtigungen gegen LMS
+|CodeExecutor|kümmert sich um das Ausführen des hochgeladenen Codes in der externen Sandbox beim CloudProvider, d.h. instantiiert den Sandbox-Container, injiziert dort den Code, stösst die Compilierung an und führt den Code aus
+|PlagiatsPrüfer|kümmert sich um die interne und externe Plagiatsprüfung, d.h. prüft den hochgeladenen Code gegen den Code anderer Studenten (aus der DB gelesen) und kapselt die Codeprüfung gegen das externe Tool `TurnItIn`. Gibt das Ergebnis der Plagiatsprüfung an die Core Komponente zurück, welche es in der DB speichert
+|Metriken|kümmert sich um die Prüfung des Codes gegen Metriken
+|Report|Komponente, welche die Auditdaten erzeugt und ausleitet
+|Datenbank|hält die Daten
+|===
+
+
+---
+
+.Laufzeitsicht-CodeChecker
+[plantuml, target=Laufzeitsicht-CodeChecker, format=png]
+....
+@startuml
+
+title Laufzeitsicht CodeChecker
+
+participant Core
+
+box "Modul CodeChecker" #99CCFF
+    participant CodeCheckerCore
+    participant DynamicCodeChecker
+    participant StaticCodeChecker
+    participant MetrikChecker
+    participant InternePlagiatsPrüfung
+    participant ExternePlagiatsPrüfung
+end box
+
+box "CloudProvider" #FFCC99
+    participant Sandbox
+end box
+
+box "TurnItIn" #FFCC99
+    participant PlagiatsPrüfung
+end box
+
+Core -> CodeCheckerCore
+activate CodeCheckerCore
+
+CodeCheckerCore -> DynamicCodeChecker
+activate DynamicCodeChecker
+DynamicCodeChecker -> Sandbox : Ausführen Code
+activate Sandbox
+DynamicCodeChecker <- Sandbox
+deactivate Sandbox
+CodeCheckerCore <- DynamicCodeChecker
+deactivate DynamicCodeChecker
+
+CodeCheckerCore -> StaticCodeChecker
+activate StaticCodeChecker
+
+StaticCodeChecker -> MetrikChecker
+activate MetrikChecker
+StaticCodeChecker <- MetrikChecker
+deactivate MetrikChecker
+
+StaticCodeChecker -> InternePlagiatsPrüfung
+activate InternePlagiatsPrüfung
+StaticCodeChecker <- InternePlagiatsPrüfung
+deactivate InternePlagiatsPrüfung
+
+StaticCodeChecker -> ExternePlagiatsPrüfung
+activate ExternePlagiatsPrüfung
+ExternePlagiatsPrüfung -> PlagiatsPrüfung
+activate PlagiatsPrüfung
+ExternePlagiatsPrüfung <- PlagiatsPrüfung
+deactivate PlagiatsPrüfung
+StaticCodeChecker <- ExternePlagiatsPrüfung
+deactivate ExternePlagiatsPrüfung
+
+CodeCheckerCore <- StaticCodeChecker
+deactivate StaticCodeChecker
+
+Core <- CodeCheckerCore
+deactivate CodeCheckerCore
+
+@enduml
+....
+
+.Laufzeitsicht-CodeChecker
+[plantuml, target=Laufzeitsicht-CodeChecker-mini, format=png]
+....
+@startuml
+
+title Laufzeitsicht CodeChecker
+
+participant Core
+
+box "Modul CodeChecker" #99CCFF
+    participant CodeCheckerCore
+    participant DynamicCodeChecker
+    participant StaticCodeChecker
+    participant Datenbank
+end box
+
+Core -> CodeCheckerCore
+activate CodeCheckerCore
+
+CodeCheckerCore -> DynamicCodeChecker ++ : dynamische Prüfung
+CodeCheckerCore <- DynamicCodeChecker --
+
+CodeCheckerCore -> StaticCodeChecker ++ : statische Prüfung
+CodeCheckerCore <- StaticCodeChecker --
+
+CodeCheckerCore -> Datenbank : Speichern der Ergebnisse
+
+Core <- CodeCheckerCore --
+
+@enduml
+....
+
+
+
+.Laufzeitsicht-CodeChecker - dynamische Prüfung
+[plantuml, target=Laufzeitsicht-CodeChecker-dynamic, format=png]
+....
+@startuml
+
+title Laufzeitsicht CodeChecker - dynamische Prüfung
+
+participant Core
+
+box "Modul CodeChecker" #99CCFF
+    participant CodeCheckerCore
+    participant DynamicCodeChecker
+end box
+
+box "CloudProvider" #FFCC99
+    participant Sandbox
+end box
+
+Core -> CodeCheckerCore ++
+
+CodeCheckerCore -> DynamicCodeChecker ++
+DynamicCodeChecker -> Sandbox ++ : Ausführen Code
+DynamicCodeChecker <- Sandbox --
+CodeCheckerCore <- DynamicCodeChecker --
+
+@enduml
+....
+
+.Laufzeitsicht-CodeChecker statische Prüfung
+[plantuml, target=Laufzeitsicht-CodeChecker-static, format=png]
+....
+@startuml
+
+title Laufzeitsicht CodeChecker - statische Prüfung
+
+participant Core
+
+box "Modul CodeChecker" #99CCFF
+    participant CodeCheckerCore
+    participant StaticCodeChecker
+    participant MetrikChecker
+    participant InternePlagiatsPrüfung
+    participant ExternePlagiatsPrüfung
+end box
+
+box "TurnItIn" #FFCC99
+    participant PlagiatsPrüfung
+end box
+
+activate CodeCheckerCore
+
+CodeCheckerCore -> StaticCodeChecker ++
+
+StaticCodeChecker -> MetrikChecker ++
+StaticCodeChecker <- MetrikChecker --
+
+StaticCodeChecker -> InternePlagiatsPrüfung ++
+StaticCodeChecker <- InternePlagiatsPrüfung --
+
+StaticCodeChecker -> ExternePlagiatsPrüfung ++
+ExternePlagiatsPrüfung -> PlagiatsPrüfung ++
+ExternePlagiatsPrüfung <- PlagiatsPrüfung --
+StaticCodeChecker <- ExternePlagiatsPrüfung --
+
+CodeCheckerCore <- StaticCodeChecker --
+
+Core <- CodeCheckerCore --
+
+@enduml
+....

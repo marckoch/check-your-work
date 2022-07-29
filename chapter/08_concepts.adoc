@@ -1,0 +1,300 @@
+[[section-concepts]]
+== Querschnittliche Konzepte
+
+=== Anbindung LMS [[LMS]]
+
+Hier handelt es sich um das bestehende, mainframe-basierte Learning Management System (siehe https://de.wikipedia.org/wiki/Lernplattform)
+
+NOTE: Hier fehlt sehr viel Information, z.B. *warum* soll LMS überhaupt angebunden werden?
+Welche Daten werden ausgetauscht?
+
+==== fachliche Details
+
+*Annahmen*: Im `LMS`
+
+* werden Kursunterlagen und Aufgaben definiert
+* sind Studenten und Professoren als Benutzer hinterlegt
+* sind die Studenten ihren Kursen zugeordnet
+* sind die Professoren ihren Kursen zugeordnet
+* sind die Aufgaben den Kursen zugeordnet
+* sind die Aufgaben einer Programmiersprache zugeordnet (oder sollte sich aus dem Kurs ergeben)
+
+*Annahme*: Es wird eine Webschnittstelle (REST) zum `LMS` eingerichtet, welche die o.g. Informationen bereitstellt.
+
+Abgerufene Informationen:
+
+1. Wenn ein Student sich im `CheckYourWork` anmeldet, wird gegen `LMS` abgefragt, welche Kurse (und die dazugehörigen Aufgaben) dieser Student sehen darf.
+Diese Aufgaben werden dem Studenten aufgelistet.
+Er kann dann die Aufgabe auswählen, zu der er Quellcode hochladen möchte.
+2. Wenn ein Professor sich im `CheckYourWork` anmeldet, sieht er die Kurse, die er gerade unterrichtet.
+Er kann einen dieser Kurse auswählen und sieht die zu diesem Kurs gehörenden Aufgaben.
+Er kann dann zu einer dieser Aufgabe die Abgabekriterien eingeben (Deadline, Metriken, etc.).
+
+==== technische Details
+
+[NOTE]
+====
+In einem echten Projekt müsste man hier die technischen Details der Schnittstelle zum `LMS` weiter ausarbeiten, d.h.
+
+* exakte Informationen was ausgetauscht wird
+* unter welchen URLs ist `LMS` aufzurufen
+* Absicherung der Verbindung (technischer User? API-Key?)
+* SLA (Service level agreement)
+* etc.
+====
+
+=== Authentisierung / Autorisierung [[ch08-authentisierung]]
+
+Beim Anmelden an das System `CheckYourWork` wird die Authentisierung gegen `LMS` durchgeführt.
+So wird vermieden, dass im `CheckYourWork` Informationen redundant zum LMS gehalten werden müssen.
+D.h. Studenten und Professoren können sich am `CheckYourWork` mit derselben Kennung (Benutzername und Passwort) anmelden wie am `LMS`.
+
+Jeder Anwender, der `CheckYourWork` benutzen möchte oder darf, muss vorher im `LMS` registriert sein.
+Dies erscheint plausibel, da sowohl Professoren als auch Studenten sicherlich im `LMS` registriert sind (Immatrikulation, Einschreiben in Kurse, etc.), bevor sie im `CheckYourWork` Aufgaben aufgeben oder lösen werden.
+
+NOTE: Falls diese Daten *nicht* im LMS hinterlegt sind, so sind sie sicherlich in einem anderen System der Universität hinterlegt. Dann wäre dringend zu empfehlen eine Schnittstelle zu diesem System zu erstellen.
+
+=== interne Plagiatsprüfung [[ch08-interne-plagiatspruefung]]
+
+[NOTE]
+====
+komplett unklar:
+
+* Es soll gegen andere Lösungen anderer Studenten verglichen werden. Gegen welche Studenten? Nur die des gleichen Kurses? Oder auch gegen die Studenten des Vorjahres, die diesen Kurs besucht haben? Oder gegen den kompletten Lösungspool einer Aufgabe aller Studenten aller Jahre, die jemals diese eine Aufgabe gelöst haben? Je grösser man diesen Pool macht, desto höher die Wahrscheinlichkeit ähnliche Lösungen zu finden, die dann als vermeintliches Plagiat markiert werden.
+* Wie soll aber ein Plagiat erkannt werden? Je kleiner die Aufgabe ("simple programming assignments"), desto ähnlicher sind alle Lösungen. Die Aufgabe "Schreibe eine Funktion, die prüft, ob eine Zahl eine Primzahl ist" wird bei 30 Studenten eines Kurses sicherlich sehr oft sehr ähnlich gelöst. Geht man weitere Jahre zurück, steigt die Wahrscheinlichkeit weiter, eine ähnliche Lösung zu finden.
+* Wie kann man "false positives" vermeiden?
+* Wie kann man "false negatives" vermeiden? z.B. haben zwei Studenten zusammengearbeitet und jeweils die selbe Lösung nur mit anderen Variablennamen im Code. Wie kann das erkannt werden?
+* Wie sieht überhaupt so ein Ergebnis einer internen Plagiatsprüfung aus? ("Code 100% identisch zu Codeausführung <id> von Student <student_id> vom <Datum>" ?)
+* evtl optional Kauflösungen evaluieren (das widerspricht aber etwas dem schmalen IT Budget)
+* evtl gibt es auch Frameworks, die sowas können? (auch für verschiedene Programmiersprachen?)
+* evtl https://github.com/manuel-freire/ac2 evaluieren
+====
+
+-> *Risiko*: interne Plagiatsprüfung noch sehr unklar/offen, weitere Klärung nötig
+
+Vorschlag einer denkbaren/kostengünstigen Minimallösung:
+
+* Der hochgeladene Quellcode wird mittels Textvergleich gegen alle in diesem Jahr zu dieser Aufgabe hochgeladenen Quellcodes anderer Studenten verglichen.
+Bei exaktem Match gilt der Quellcode als Plagiat.
+* Um zu viele "false positives" gerade bei kurzen Lösungen zu vermeiden, wird die interne Prüfung erst ab einer Zeilenanzahl von 10 Zeilen durchgeführt.
+(Alternativ: Könnte man auch pro Aufgabe einstellbar machen. D.h. bei manchen Aufgaben, bei denen man eine kurze Lösung erwartet, kann diese Prüfung komplett ausgeschaltet werden)
+
+=== Codeausführung [[ch08-codeausfuehrung]]
+
+==== Motivation
+Der Quellcode des Studenten soll ausgeführt, geprüft und benotet werden.
+
+==== Hintergründe / Konsequenzen
+
+* Abhängig vom Kurs und der Aufgabe kann der hochgeladene Quellcode in unterschiedlichen Programmiersprachen geschrieben sein.
+* Abhängig von der Programmiersprache muss der Quellcode evtl. vorher compiliert werden.
+* Zur Ausführung des Quellcodes ist eine Art "Treibercode" nötig. Dies kann Testcode sein (z.B. JUnit im Java) oder ein Startskript (z.B. `java <MainClass>`).
+* Es muss vermieden werden, dass vom Studenten hochgeladener Quellcode direkt auf den Rechnerinstanzen der Anwendung ausgeführt wird und diese - beabsichtigt oder unbeabsichtigt - korrumpiert.
+Daher läuft der hochgeladene Quellcode in einem eigenen, isolierten Container, der keinen Zugriff auf andere Container, Server, Netzwerke oder Datenbanken hat.
+* Aus Sicherheitsgründen wird dieser Container mit einem Zeitlimit von 30 Sekunden und einem Speicherlimit von 256 MB gestartet.
+* Dieser BasisContainer wird aus einem BasisImage gestartet.
+* Für jede Programmiersprache wird vom Administrator der Anwendung `CheckYourWork` initial ein eigenes Basisimage (mit passendem Compiler, passender Laufzeitumgebung, etc.) erzeugt und in der ImageRegistry beim CloudProvider hochgeladen.
+
+NOTE: Diesen Punkt müsste man in einem "echten" Projekt vorher nochmal ausprobieren und verifizieren. Wie kann man von einer Webanwendung aus einen anderen Container starten, dort Code einbinden, compilieren, laufen lassen und Ergebnisse/Ausgaben abgreifen?
+
+==== genauer Ablauf
+
+Vorbereitende Arbeiten (bevor ein Student eine Aufgabe lösen kann):
+
+* Administrator erstellt programmiersprachen-spezifisches Basisimage (z.B. Java, Go, Python, etc.) und inkludiert darin den passenden Compiler und die Laufzeitumgebung
+* Administrator lädt dieses Basisimage beim CloudProvider in die dortige ImageRegistry
+* Administrator registriert dieses BasisImage im System `CheckYourWork`, so dass alle Kurse für diese Programmiersprache dieses BasisImage verwenden
+* Administrator erstellt für jede Programmieraufgabe Treibercode bzw. Testcode -- also Code, der die Korrektheit des vom Studenten hochgeladenen Codes verifiziert
+*OFFEN: Wo liegt dieser Treibercode und wie testet er den Studentencode? Wie kommt der in den Container? Es braucht JEDE(!) Aufgabe auch eigenen, spezifischen Treibercode! Damit JEDE Programmieraufgabe individuell geprüft werden kann!*
+
+Ablauf bei Lösen einer Aufgabe durch den Studenten:
+
+* Student lädt Quellcode zu einer Aufgabe hoch
+* die Programmiersprache des Quellcodes bzw. der Aufgabe bestimmt welches Basisimage verwendet wird
+* beim CloudProvider wird das passende BasisImage aus der ImageRegistry gezogen und als Container gestartet
+* in diesen Container wird der Treibercode eingebunden (VolumeMount)
+* in diesen Container wird der hochgeladene Quellcode des Studenten eingebunden (VolumeMount)
+* Quellcode und Treibercode werden compiliert, falls nötig (entfällt bei Skriptsprachen)
+* Abbruch falls Quellcode nicht compiliert
+* Treibercode wird gestartet und prüft den Quellcode
+* die Ausgabekanäle (StdOut und StdErr) werden während der Ausführung protokolliert
+* mit Beendung des Treibercodes wird der Container sauber heruntergefahren und beendet
+* falls der Container nach 30 Sekunden noch läuft, wird er gekillt
+
+=== Datenhaltung / Persistenz
+
+*TODO: Was wird alles persistiert? Evtl ersten groben Datenmodellentwurf hier aufnehmen?
+Datenstruktur NoSQL! evtl kurzes Beispiel JSON beschreiben!*
+
+=== Auditierbarkeit [[ch08-auditierbarkeit]]
+
+was genau heisst Auditierbar?
+-> Revisionssicher, unveränderbar ('immutable'), ohne Referenzen
+
+*TODO:*
+
+* evtl Umwandeln von relationalem Datensatz zu Dokumentendatensatz (JSON) und den in NoSQL-DB speichern?
+* eingeschränkte Zugriffsrechte für Datenbank (CRUD ohne U und D)
+
+==== Umfang der Daten [[umfang-der-daten]]
+
+Bei jeder(!) Code-Ausführung wird in der Datenbank gespeichert:
+
+* der Quellcode in textueller Form, unverändert, so wie er hochgeladen wurde
+* der Zeitpunkt der Ausführung
+* der Benutzer, der diesen Code hochgeladen hat
+* eine Referenz zur Aufgabe, die dieser Code lösen soll
+* eine Referenz oder ID vom Basis-Image, in dem dieser Code beim ext. Provider lief
+* der Testcode in textueller Form, der zur Prüfung verwendet wurde
+* Inhalt des StdOut während der Ausführung
+* Inhalt des StdErr während der Ausführung
+* Ergebnis der statischen CodeAnalyse (Metrikprüfung)
+* Ergebnis der internen Plagiatsprüfung
+* Ergebnis der externen Plagiatsprüfung
+* die automatisch ermittelte Gesamtbenotung des Code
+
+*TODO: Das sind echt viele Daten ...*
+
+Diese Daten werden beim Speichern aufgelöst und dupliziert gespeichert, d.h. Referenzen werden aufgelöst, etc.
+So ist sichergestellt, dass nachträgliche Änderungen an z.B. Metriken sich nicht in die persistierten Auditdaten durchschlagen. (Snapshot zum Zeitpunkt der Ausführung)
+
+*Beispiel*: Es werden *keine* Referenzen gespeichert (sinngemäß):
+
+ Metrik mit Metrik-ID 132 ist verletzt
+
+Wenn man nur die Referenz speichert, wäre unklar, wie die Metrik mit der ID 132 zum Zeitpunkt der Codeausführung aussah. Diese Referenz wird in aufgelöster Form gespeichert:
+
+ Metrik mit Metrik-ID 132 (lines of code darf 40 nicht übersteigen) ist verletzt
+
+So ist auditierbar festgehalten, das die Metrik *zum Zeitpunkt der Prüfung* loc < 40 beinhaltete, obwohl sie ggf. heute auf loc < 100 geändert wurde.
+
+==== Einschränkung der Zugriffsrechte
+
+Sobald die Daten in der Datenbank persistiert sind, darf kein User diese verändern oder löschen.
+Dies wird sichergestellt, in dem der technische Benutzer mit dem die Anwendung auf die Datenbank zugreift nur Inserts und Selects machen darf, keine Updates oder Deletes.
+
+Also vom "CRUD" (Create - Read - Update - Delete) sind nur C und R erlaubt, U und D nicht.
+
+=== Metriken [[ch08-metriken]]
+
+[NOTE]
+====
+*TODO*: externe Lösung prüfen? sonarqube? einfaches RegEx wird evtl nicht ausreichen um Metriken zu prüfen?
+halte ich für sehr schwierig und teuer, wenn man hier ein SonarQube nachbauen möchte.
+Es müssten Metriken für jede Programmiersprache (zu der es einen Kurs gibt) aufgenommen werden.
+
+Ein kurzer Blick ins https://sonarcloud.io zeigt dort 650 Regeln für Java, 580 für C++, 222 für Python, etc.
+Will man das alles nachbauen?
+Geht das überhaupt so einfach?
+
+Ich bezweifle, dass eine Code-Metrik immer nur eine einfache RegEx ist.
+Evtl muss man auch im compilierten Code (AST, Abstract Syntax Tree) Prüfungen machen?
+====
+
+-> Für mich die grösste Unsicherheit im Projekt und das grösste Risiko, siehe <<section-technical-risks>>
+
+=== Automatische Benotung
+
+[NOTE]
+*TODO*: Wie soll das ablaufen? Wer definiert wo die Regeln? Keine Fehler + keine Metriken verletzt + Plagiatsprüfung negativ == 100 Punkte? Wo gibt es wann wie welchen Punktabzug? Welche Noten gibt es überhaupt?
+
+Folgende Teilaspekte sind denkbar und müssten in die Benotung einfliessen:
+
+* Code compiliert ja/nein
+* Code läuft ja/nein
+* Code liefert das richtige Ergebnis ja/nein
+* Code erfüllt Metriken ja/nein
+* Code erfüllt interne Plagiatsprüfung ja/nein
+* Code erfüllt externe Plagiatsprüfung ja/nein
+
+Volle Punktzahl gibt es für die Aufgabe, wenn alle Punkte positiv durchlaufen werden, d.h.:
+
+* [x] Code compiliert
+* [x] Code läuft
+* [x] Code liefert das richtige Ergebnis
+* [x] Code erfüllt Metriken
+* [x] Code besteht interne Plagiatsprüfung, d.h. ist *kein* Plagiat
+* [x] Code besteht externe Plagiatsprüfung, d.h. ist *kein* Plagiat
+
+Wie sich das Nicht-Erfüllen eines oder mehrerer Teilaspekte in der Gesamtbenotung der Aufgabe bemerkbar macht, ist offen und kann hier auch nur schwer angenommen werden. (Ist für die Architektur an sich aber auch nicht weiter entscheidend. Das ist Teil der Business-Logic)
+
+=== Mengengerüste
+
+NOTE: unklar wo sowas im arc42 hingehört, finde ich aber wichtig für ein neues System!
+
+Hier einige kurze Abschätzungen:
+
+==== Code Uploads und Ausführungen
+
+* 300 User pro Jahr scheint nicht viel, keine globale / überregionale Lösung nötig
+* in der Anforderung ist von "simple programming assignments" die Rede, d.h vermutlich <100 lines of code pro Aufgabenlösung
+* Annahmen:
+** 300 Studenten pro Jahr
+** Jeder Student besucht pro Vorlesungstag 2 Kurse
+** Jeder Kurs stellt pro Vorlesungstag eine Aufgabe (oder anders: Jeder Student erhält in Summe pro Woche 10 Aufgaben)
+
+ --> 300 x 2 x 1 = 600 Codesnippets plus Ausführungen/Plagiatsprüfungen pro Vorlesungstag
+
+* Annahme:
+** Während der Vorlesungszeit (werktags 8-18 Uhr) wenig Aktivität (da sind die Studenten ja in der Vorlesung)
+** Erhöhte Aktivität in der Vorlesungszeit abends, nachts und am Wochenende (zu den Zeiten, wenn die Aufgaben gelöst werden)
+** Während der Ferien wenig Aktivität
+
+ --> 600 Uploads pro Vorlesungstag --> verteilt auf 10 Stunden vorlesungsfreie Zeit am Tag macht das ca. 60 Uploads pro Stunde, d.h. ca 1 pro Minute
+
+* Vermutung: Vor Deadlines erhöhtes Aufkommen von Anfragen, d.h. Elastizität nicht unwichtig
+
+* Annahme:
+** 16 Wochen Vorlesungszeit pro Semester
+** 5 Tage pro Woche
+** 2 Semester pro Jahr
+
+ --> 2 * 16 * 5 = 160 Vorlesungstage pro Kalenderjahr
+
+ --> 600 Code-Ausführungen pro Vorlesungstag * 160 Vorlesungstage pro Jahr
+ --> 96.000 Code-Ausführungen pro Kalenderjahr
+
+*TODO: Kann das stimmen? Kommt mir hoch vor. Wie soll jemand ein Audit über 100.000 Dinge machen?*
+
+==== Speicherbedarf einer Code-Ausführung
+
+Bei jeder(!) Code-Ausführung wird ein Datensatz gemäss <<umfang-der-daten>> in der Datenbank gespeichert.
+
+Da aktuell noch fast jeder der o.g. Punkte im groben Planungsstand ist, kann hier noch keine verlässliche Grösse angegeben werden. (Dies sollte aber im weiteren Verlauf der Architekturarbeit noch erfolgen!)
+
+==== Grösse eines Audit-Reports
+
+Wird ein Audit pro Jahr gemacht und alle 96.000 CodeAusführungen eines Jahres im Audit exportiert, so erhält man ca. *xxx* MB pro Audit-Report
+
+=== Schnittstelle TurnItIn [[ch08-turnitin]]
+
+*TODO: unklar wo sowas (Schnittstellen) im arc42 am besten aufgehoben ist*
+
+NOTE: Auch hier sehr dürftige Info in der Anforderung, Art der Schnittstelle unklar ("web-based"? REST? SOAP? XML?)
+
+==== fachliche Details
+
+* Web-basierte Schnittstelle zur Plagiatserkennung
+
+* Annahme:
+** synchrone Webschnittstelle
+** das Codesnippet wird per HTTP POST ans `TurnItIn` geschickt
+** das Ergebnis der Plagiatsprüfung liegt binnen weniger Sekunden vor und wird synchron in der Response (JSON) zurückgeschickt
+
+ähnliche Systeme:
+
+* https://codequiry.com/
+* https://copyleaks.com/code-plagiarism-checker/
+
+==== technische Details
+
+[NOTE]
+====
+In einem echten Projekt müsste man hier die technischen Details der Schnittstelle zum `TurnItIn` weiter ausarbeiten, d.h.
+
+* exakte Informationen was ausgetauscht wird
+* unter welchen URLs ist `TurnItIn` aufzurufen
+* Absicherung der Verbindung (technischer User? API-Key?)
+* SLA (Service level agreement)
+* etc.
+====

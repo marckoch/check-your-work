@@ -1,0 +1,138 @@
+[[section-runtime-view]]
+== Laufzeitsicht
+
+Hier beschränke ich mich auf den nicht-trivialen Teil der Code-Prüfung <<ch5-buildingblock-view-ebene3>>.
+
+=== Laufzeitsicht des Modul CodeChecker [[ch06-laufeit-codechecker]]
+
+Folgende Diagramme zeigen das Laufzeitverhalten innerhalb der Komponente CodeChecker.
+Zuerst erfolgt die dynamische Codeprüfung, anschliessend die statische.
+Diagram 1 zeigt den gesamten Ablauf, Diagram 2 die dynamische Prüfung, Diagram 3 die statische Prüfung.
+
+Die Prüfungen laufen wie folgt ab:
+
+* dynamische Prüfung mit Ausführung des Quellcodes in der Sandbox beim CloudProvider
+* statische Prüfung mit
+** Metrikcheck
+** interner Plagiatsprüfung (Vergleich gegen Quellcode anderer Studenten)
+** externer Plagiatsprüfung mit Aufruf des externen Systems `TurnItIn`
+* Benotung der Arbeit
+* Aggregation und Speichern der Ergebnisse in Datenbank
+
+.Laufzeitsicht-CodeChecker - Übersicht (ohne CloudProvider und TurnItIn)
+[plantuml, target=Laufzeitsicht-CodeChecker-Übersicht, format=png]
+....
+@startuml
+
+title Laufzeitsicht CodeChecker
+
+participant Core
+
+box "Modul CodeChecker" #99CCFF
+    participant CodeCheckerCore
+    participant DynamicCodeChecker
+    participant StaticCodeChecker
+    participant Datenbank
+end box
+
+Core -> CodeCheckerCore
+activate CodeCheckerCore
+
+CodeCheckerCore -> DynamicCodeChecker ++ : dynamische Prüfung
+note right DynamicCodeChecker
+Details siehe Diagram 2
+end note
+CodeCheckerCore <- DynamicCodeChecker --
+
+CodeCheckerCore -> StaticCodeChecker ++ : statische Prüfung
+note right StaticCodeChecker
+Details siehe Diagram 3
+end note
+CodeCheckerCore <- StaticCodeChecker --
+
+CodeCheckerCore -> CodeCheckerCore : Benotung der Arbeit
+
+CodeCheckerCore -> Datenbank : Speichern der Ergebnisse
+
+Core <- CodeCheckerCore --
+
+@enduml
+....
+
+.Laufzeitsicht-CodeChecker - dynamische Prüfung
+[plantuml, target=Laufzeitsicht-CodeChecker-dynamic, format=png]
+....
+@startuml
+
+title Laufzeitsicht CodeChecker - dynamische Prüfung
+
+box "Modul CodeChecker" #99CCFF
+    participant CodeCheckerCore
+    participant DynamicCodeChecker
+end box
+
+box "CloudProvider" #FFCC99
+    participant Sandbox
+end box
+
+CodeCheckerCore -> DynamicCodeChecker ++ : Quellcode
+DynamicCodeChecker -> Sandbox ++ : Quellcode
+Sandbox -> Sandbox : Quellcode wird in Sandbox\ncompiliert, ausgeführt\nund getestet
+DynamicCodeChecker <- Sandbox -- : Ausgabe, Testergebnis
+CodeCheckerCore <- DynamicCodeChecker -- : Ergebnis der\ndynamischen Prüfung
+
+note over CodeCheckerCore
+Fortsetzung
+nächstes Bild
+end note
+
+@enduml
+....
+
+.Laufzeitsicht-CodeChecker - statische Prüfung
+[plantuml, target=Laufzeitsicht-CodeChecker-static, format=png]
+....
+@startuml
+
+title Laufzeitsicht CodeChecker - statische Prüfung
+
+
+box "Modul CodeChecker" #99CCFF
+    participant CodeCheckerCore
+    participant StaticCodeChecker
+    participant MetrikChecker
+    participant InternePlagiatsPrüfung
+    participant Datenbank
+    participant ExternePlagiatsPrüfung
+end box
+
+box "TurnItIn" #FFCC99
+    participant PlagiatsPrüfung
+end box
+
+activate CodeCheckerCore
+
+note over CodeCheckerCore
+Fortsetzung
+voriges Bild
+end note
+
+CodeCheckerCore -> StaticCodeChecker ++ : Quellcode
+
+StaticCodeChecker -> MetrikChecker ++ : Quellcode
+StaticCodeChecker <- MetrikChecker -- : Metrikergebnis
+
+StaticCodeChecker -> InternePlagiatsPrüfung ++ : Quellcode
+InternePlagiatsPrüfung -> Datenbank : Vergleich mit\nanderen\nLösungen
+StaticCodeChecker <- InternePlagiatsPrüfung -- : Ergebnis interne Plagiatsprüfung
+
+StaticCodeChecker -> ExternePlagiatsPrüfung ++ : Quellcode
+ExternePlagiatsPrüfung -> PlagiatsPrüfung ++ : Quellcode
+PlagiatsPrüfung -> PlagiatsPrüfung : Prüfung des Quellcodes
+ExternePlagiatsPrüfung <- PlagiatsPrüfung -- : Ergebnis\nexterne\nPlagiatsPrüfung
+StaticCodeChecker <- ExternePlagiatsPrüfung -- : Ergebnis externe PlagiatsPrüfung
+
+CodeCheckerCore <- StaticCodeChecker -- : Ergebnis der\nstatischen Prüfung
+
+@enduml
+....

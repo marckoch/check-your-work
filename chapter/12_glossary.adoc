@@ -1,0 +1,13 @@
+[[section-glossary]]
+== Glossar
+
+[cols="1,4" options="header"]
+|===
+|Begriff |Definition
+
+|Sandbox
+|Containerinstanz beim CloudProvider, strikt von der Umgebung isoliert
+
+|Treibercode
+|Code, der den vom Studenten hochgeladenen Code, ausruft und auf Korrektheit prüft
+|===

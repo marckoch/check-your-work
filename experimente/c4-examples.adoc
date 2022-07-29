@@ -1,0 +1,204 @@
+
+[plantuml, target=technischer-context21, format=png]
+....
+@startuml
+!include <C4/C4_Container>
+
+Person(personAlias, "Label", "Optional Description")
+Container(containerAlias, "Label", "Technology", "Optional Description")
+System(systemAlias, "Label", "Optional Description")
+
+System_Ext(extSystemAlias, "Label", "Optional Description")
+
+Rel(personAlias, containerAlias, "Label", "Optional Technology")
+
+Rel_U(systemAlias, extSystemAlias, "Label", "Optional Technology")
+@enduml
+....
+
+[plantuml, target=technischer-context212, format=png]
+....
+@startuml
+!include  <C4/C4_Context.puml>
+!include <office/Users/user.puml>
+
+LAYOUT_WITH_LEGEND()
+
+
+title Top level Context diagram for ACME Global Widget Production
+
+
+Person(AcmeProdOwner, Acme Production Owner , "<$user> \n Responsible for Production of widgets in ACME Production Site" )
+Person(3rdProdOwner, 3rdParty Production Owner , "<$user> \n Responsible for Production of widgets in 3rdParty Production Site" )
+
+
+System_Boundary(Remote, "Remote") {
+
+    System(ProdSystemHost, "Production Host", "Drives widget Production\n Analyses widget Production data to create reports")
+    System(Analytics, "Analytics", "Provides data analysis and a dashboard view data - including relevant Production data")
+    System(Monitoring, "Monitoring", "Monitors Production Host\nUses AWS Services")
+    System_Ext(SupplyChain, "SupplyChain", "Provides parts to make the widgets")
+    System_Ext(InventoryTracking, "InventoryTracking", "Customer Reference")
+
+
+}
+
+
+
+Enterprise_Boundary(AcmeProd, "ACME Production Site") {
+
+    System(AcmeWorkStation1, "WorkStation1", " Production setup for a group of widgets")
+    System(AcmeWorkStation2, "WorkStation2", " Production setup for a group of widgets")
+    System(AcmeWorkStationN, "WorkStationN", " Production setup for a group of widgets")
+
+}
+
+
+Enterprise_Boundary(3rdProd, "3rdParty Production Site") {
+
+
+    System(3rdWorkStation1, "WorkStation1", " Production setup for a group of widgets")
+    System(3rdWorkStation2, "WorkStation2", " Production setup for a group of widgets")
+    System(3rdWorkStationN, "WorkStationN", " Production setup for a group of widgets")
+}
+
+
+Rel_U(AcmeWorkStation1, ProdSystemHost, "Sends Production report for widget")
+Rel_U(AcmeWorkStation2, ProdSystemHost, "Sends Production report for widget")
+Rel_U(AcmeWorkStationN, ProdSystemHost, "Sends Production report for widget")
+
+
+Rel_U(3rdWorkStation1, ProdSystemHost, "Sends Production report for widget")
+Rel_U(3rdWorkStation2, ProdSystemHost, "Sends Production report for widget")
+Rel_U(3rdWorkStationN, ProdSystemHost, "Sends Production report for widget")
+
+
+
+
+
+Rel_D(AcmeProdOwner, ProdSystemHost, "Reviews Acme and 3rdParty site Production reports")
+Rel_D(3rdProdOwner, ProdSystemHost, "Reviews 3rdParty site Production reports")
+
+
+Rel_D(Analytics, ProdSystemHost, "Data Analysis")
+Rel_D(SupplyChain, ProdSystemHost, "Parts")
+Rel_D(InventoryTracking, ProdSystemHost, "Tracking")
+Rel_D(Monitoring, ProdSystemHost, "Monitoring")
+
+footer %filename() rendered with PlantUML version %version()\nThe Hitchhiker’s Guide to PlantUML
+
+@enduml
+....
+
+
+[plantuml, target=context, format=png]
+....
+@startuml
+!include  <C4/C4_Context.puml>
+
+title Context diagram für CheckYourWork
+
+Person(Student, Student, "Hochladen von Code")
+Person(Professor, Professor, "Definition der Abgabekriterien")
+Person(Auditor, Auditor, "Durchführen des Audits")
+
+System(CheckYourWork, "CheckYourWork", "Speichern der Daten\nMetriken\nPlagiatsprüfung\nArchivierung")
+System_Ext(LMS, "LMS", "bestehendes System der Universität")
+System_Ext(TurnItIn, "TurnItIn", "Webbasiertes System zur Plagiatsprüfung")
+System_Ext(CloudProvider, "CloudProvider", "Ausführung des Codes in Sandbox-Container")
+
+Rel_D(Student, CheckYourWork, "benutzt")
+Rel_D(Professor, CheckYourWork, "benutzt")
+Rel_D(Auditor, CheckYourWork, "benutzt")
+
+Rel_U(LMS, CheckYourWork,Benutzerdaten Kursinformationen Aufgaben)
+BiRel_D(CheckYourWork, TurnItIn, Plagiatsprüfung)
+BiRel_D(CheckYourWork, CloudProvider, Ausführung Code)
+
+SHOW_LEGEND()
+
+@enduml
+....
+
+
+[plantuml, target=c4-ebene2, format=png]
+....
+@startuml
+!include <C4/C4_Context.puml>
+!include <C4/C4_Container.puml>
+
+title Bausteinsicht für CheckYourWork (Ebene 2)
+
+Person(user, <<Benutzer>>)
+
+System_Boundary(Remote, "CheckYourWork") {
+    Container(Core, "Core", "WebApplication")
+    Container(Auth, "Berechtigungsprüfung", Prüfung Anmeldedaten / Delegation an LMS)
+    Container(Audit, "Audit", Bereitstellen Auditdaten)
+    Container(cc, "CodeChecker", Prüfung des Codes)
+    ContainerDb(DB, "Relational Database", "SQL")
+}
+
+System_Ext(LMS, "LMS", "bestehendes System der Universität")
+System_Ext(TurnItIn, "TurnItIn", "Webbasiertes System zur Plagiatsprüfung")
+System_Ext(CloudProvider, "CloudProvider", "Ausführung des Codes in Sandbox-Container")
+
+Rel_D(user, Core, HTTPS)
+
+BiRel_D(Core, Auth, benutzt)
+BiRel_D(Core, cc, benutzt)
+BiRel_D(Core, Audit, benutzt)
+BiRel_D(Core, DB, Datenhaltung)
+Rel_L(DB, Audit, Auditdaten)
+Rel_L(cc, DB, Ergebnis)
+
+Rel_U(LMS, Auth, HTTPS)
+BiRel_D(cc, TurnItIn, HTTPS)
+BiRel_D(cc, CloudProvider, HTTPS)
+
+SHOW_LEGEND()
+
+@enduml
+....
+
+
+
+[plantuml, target=c4-ebene3-codechecker, format=png]
+....
+@startuml
+!include <C4/C4_Context.puml>
+!include <C4/C4_Container.puml>
+
+title Bausteinsicht für die Komponente 'CodeChecker' (Ebene 3)
+
+System(Core, "Core", "WebApplication")
+
+System_Boundary(Remote, "CodeChecker") {
+    Container(cc, "CodeCheckerCore", Orchestrierung der Code-Prüfung)
+    Container(met, "MetricChecker", Prüfung der Code-Metriken)
+    Container(scc, "StaticCodeChecker", statische Prüfung des Codes)
+    Container(ipp, "InternePlagiatsPrüfung", "interne Plagiats Prüfung")
+    Container(epp, "ExternePlagiatsPrüfung", "externe Plagiats Prüfung")
+    Container(dcc, "DynamicCodeChecker", dynamische Prüfung des Codes)
+}
+
+ContainerDb(DB, "Relational Database", "SQL")
+System_Ext(TurnItIn, "TurnItIn", "Webbasiertes System zur Plagiatsprüfung")
+System_Ext(CloudProvider, "CloudProvider", "Ausführung des Codes in Sandbox-Container")
+
+BiRel_D(cc, scc, "benutzt")
+BiRel_R(cc, dcc, "benutzt")
+Rel_D(scc, met, "Aufruf")
+Rel_D(scc, ipp, "Aufruf")
+Rel_D(scc, epp, "Aufruf")
+BiRel_D(Core, cc, benutzt)
+Rel_D(cc, DB, Ergebnis der Code-Prüfung)
+Rel_D(ipp, DB, Vergleich mit anderen Code-Snippets)
+
+BiRel_D(epp, TurnItIn, HTTPS)
+BiRel_R(dcc, CloudProvider, HTTPS)
+
+SHOW_LEGEND()
+
+@enduml
+....

@@ -1,0 +1,24 @@
+[[section-design-decisions]]
+== Architekturentscheidungen
+
+.Architekturentscheidungen
+[cols="1,2"]
+|===
+|Thema|Begründung
+
+|Quellcode wird in isolierter Sandbox compiliert und ausgeführt
+|grundlegende Sicherheitsentscheidung. Es ist zu risikoreich unbekannten Code in einem produktiv genutzten System laufen zu lassen
+
+|Authentisierung/Autorisierung gegen LMS
+|Es soll vermieden werden, dass Daten dupliziert vorliegen und somit voneinander abweichen können. Ausserdem wird dadurch der Benutzerkomfort erhöht (eine Kennung für `LMS` und `CheckYourWork`)
+
+|AWS als externe CloudProvider
+|Da es hier keine Vorgaben gibt, nehme ich das womit ich mich am besten auskenne.
+
+|Techstack: Kotlin/SpringBoot/Postgres
+|Da es hier keine Vorgaben gibt, nehme ich das womit ich mich am besten auskenne.
+
+|klassische Webanwendung, serverside rendering, keine 'single page application'
+|Es gibt keine Anforderung einer reaktiven Oberfläche und der Umfang der Oberfläche scheint recht gering.
+
+|===
