@@ -17,3 +17,8 @@ README.md|die Datei hier
 chapter|die Unterkapitel, die in `architecture.adoc` referenziert werden
 experimente|Ablage für Experimente, drafts, etc.
 images|hier werden Bilder generiert beim Erzeugen des PDF
+
+Wie kann man das anschauen? Im Github sieht man keine PlantUML-Diagramme?
+
+Meine Empfehlung: Auschecken und im IntelliJ anschauen (mit Plugins: https://plugins.jetbrains.com/plugin/7391-asciidoc und
+https://plugins.jetbrains.com/plugin/7017-plantuml-integration). Zusätzlich braucht man noch GraphViz lokal installiert: https://plantuml.com/en/starting
