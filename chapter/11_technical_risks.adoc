@@ -1,9 +1,0 @@
-[[section-technical-risks]]
-== Risiken und technische Schulden
-
-* Eigenentwicklung der Metriken: Dieser Punkt erscheint sehr risikoreich. Das kann ausarten, siehe <<ch08-metriken>>
-* Eigenentwicklung der internen Plagiatsprüfung: Auch dieser Punkt erscheint zum jetzigen Zeitpunkt sehr unklar und risikoreich, siehe <<ch08-interne-plagiatspruefung>>
-* Im Grunde baut man hier eine kleine CI/CD Pipeline nach (Quellcode wird hochgeladen, es wird ein Build gestartet, dann laufen Tests und Metriken, am Ende ein Ergebnis angezeigt).
-Evtl würde auch eine einfachere Lösung reichen, bei der der Student den Code nicht in einer Anwendung hochlädt, sondern in einem Repository eincheckt und dann auf den Durchlauf dieser "Buildpipeline" wartet.
-Das komplette Ergebnis dieses Laufs mitsamt Codes könnte man dann evtl auch im Repository einchecken.
-Evtl würde das sogar den Audit-Regeln genügen.

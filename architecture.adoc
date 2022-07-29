@@ -50,7 +50,7 @@ include::chapter/10_quality_requirements.adoc[]
 
 <<<
 // 11. Risiken
-include::chapter/11_technical_risks.adoc[]
+include::chapter/11_risks.adoc[]
 
 <<<
 // 12. Glossar
