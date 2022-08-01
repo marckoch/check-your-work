@@ -9,7 +9,7 @@
 |Quellcode wird in isolierter Sandbox compiliert und ausgeführt
 |grundlegende Sicherheitsentscheidung. Es ist zu risikoreich unbekannten Code in einem produktiv genutzten System laufen zu lassen
 
-|Authentisierung/Autorisierung gegen LMS
+|Authentisierung/Autorisierung/'single sign on' gegen LMS
 |Es soll vermieden werden, dass Daten dupliziert vorliegen und somit voneinander abweichen können. Ausserdem wird dadurch der Benutzerkomfort erhöht (eine Kennung für `LMS` und `CheckYourWork`)
 
 |AWS als externe CloudProvider

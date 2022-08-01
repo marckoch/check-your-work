@@ -5,9 +5,12 @@
 |===
 |Begriff |Definition
 
-|Sandbox
+|BasisImage
+|Image aus dem der BasisContainer/Sandbox gestartet wird
+
+|BasisContainer / Sandbox
 |Containerinstanz beim CloudProvider, strikt von der Umgebung isoliert
 
 |Treibercode
-|Code, der den vom Studenten hochgeladenen Code, ausruft und auf Korrektheit prüft
+|Code, der den vom Studenten hochgeladenen Code ausruft und auf Korrektheit prüft
 |===

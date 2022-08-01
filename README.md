@@ -12,6 +12,7 @@ Diagramme sind mit PlantUML gemacht (https://plantuml.com/)
 Dateien/Verzeichnisse|Inhalt
 ---|---
 architecture.adoc|Lösung/Architektur
+architecture.pdf|Lösung/Architektur in PDF-Format zum leichteren Lesen
 kata.md|Kata/Aufgabenstellung
 README.md|die Datei hier
 chapter|die Unterkapitel, die in `architecture.adoc` referenziert werden
@@ -22,3 +23,6 @@ Wie kann man das anschauen? Im Github sieht man keine PlantUML-Diagramme?
 
 Meine Empfehlung: Auschecken und im IntelliJ anschauen (mit Plugins: https://plugins.jetbrains.com/plugin/7391-asciidoc und
 https://plugins.jetbrains.com/plugin/7017-plantuml-integration). Zusätzlich braucht man noch GraphViz lokal installiert: https://plantuml.com/en/starting
+
+PDF:
+Das PDF habe ich zum leichteren Lesen eingebunden. Es wird erzeugt, indem man im IntelliJ das 'architecture.adoc' öffnet und  die Option "create PDF from current file" ausführt. 

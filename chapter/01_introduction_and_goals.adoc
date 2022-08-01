@@ -17,7 +17,7 @@ Typische Roundtrip-Zeiten (Quellcode hochladen->Laufen lassen->Ergebnis einsehen
 === Qualitätsziele
 
 .Die wichtigsten Ziele
-[cols="1,1,6"]
+[cols="1,2,7"]
 |===
 |Nr.|Ziel|Erläuterung
 

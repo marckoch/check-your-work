@@ -11,9 +11,11 @@ So ist sichergestellt, dass kein Zugriff von diesem Quellcode auf das Produktivs
 |<<ch08-codeausfuehrung>>
 
 |Auditierbarkeit
-|Die gespeicherten Daten werden beim Speichern vollumfänglich aufgelöst, d.h. sämtliche Referenzen ausgehend vom Hauptdatensatz ("Ausführung") werden aufgelöst
+|Die gespeicherten Daten werden beim Speichern vollumfänglich aufgelöst,
+d.h. sämtliche Referenzen ausgehend vom Hauptdatensatz ("Ausführung") werden aufgelöst
 (Snapshot aller referenzierten Daten zum Zeitpunkt der Codeausführung).
-Die Zugriffsrechte auf die Datenbank werden so eingeschränkt, dass einmal gespeicherte Datensätze im Nachhinein nicht verändert werden können.
+Die Zugriffsrechte auf die Datenbank werden so eingeschränkt,
+dass einmal gespeicherte Datensätze im Nachhinein nicht verändert werden können.
 |<<ch08-auditierbarkeit>>
 
 | Plagiatsprüfung
@@ -24,13 +26,11 @@ Bei der externen Plagiatsprüfung wird die Lösung gegen den externen Anbieter `
 <<ch08-turnitin>>
 
 |Datenstruktur
-|Das Ergebnis der Codeausführung enthält überwiegend unstrukturierte, schemalose, nicht relationale Textdaten.
+|Das Ergebnis der Codeausführung enthält überwiegend unstrukturierte, schema-lose, nicht relationale Textdaten.
 Daher wird das Ergebnis einer Codeausführung als Document in einer NoSQL-Datenbank gespeichert.
+|<<umfang-der-daten>>
 
-(*TODO*: oder doch im PostgresQL? mit Datentyp `jsonb`? )
-|f
-
-|Anmeldung am System
+|Anmeldung am System / "single sign on"
 |Beim Anmelden ans System `CheckYourWork` wird ein Weiterleiten an `LMS` durchgeführt, d.h. im `CheckYourWork` selber werden keinerlei Benutzerdaten der Anwender gespeichert.
 |<<ch08-authentisierung>>
 |===

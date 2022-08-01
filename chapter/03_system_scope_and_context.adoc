@@ -64,9 +64,9 @@ In einem echten Projekt ist dies Teil der Requirements-Analyse (bzw. Lastenheft 
 *Ablauf* im `CheckYourWork` nun:
 
 * Student meldet sich an (Abgleich gegen `LMS`)
-* der Student wählt die Aufgabe, zu der er eine Lösung hochladen möchte
+* Student wählt die Aufgabe, zu der er eine Lösung hochladen möchte
 * ist das Abgabedatum für diese Aufgabe bereits überschritten, ist kein Upload mehr möglich->Ende
-* der Student lädt den Quellcode zu der gewählten Aufgabe hoch
+* Student lädt den Quellcode zu der gewählten Aufgabe hoch
 * Quellcode durchläuft die dynamische CodeAnalyse, d.h. wird in passender Sandbox ausgeführt, dabei Ausgaben/Tests geprüft
 * Quellcode durchläuft die statische CodeAnalyse, d.h.:
 ** Quellcode wird gegen Metriken geprüft
@@ -77,7 +77,7 @@ In einem echten Projekt ist dies Teil der Requirements-Analyse (bzw. Lastenheft 
 * das Ergebnis wird dem Studenten (nicht editierbar) angezeigt: Bewertung, Metriken, Testergebnisse
 * Student kann weitere Versuche hochladen (selber Ablauf wie vorher)
 * Am Ende sind alle Versuche des Studenten zu dieser Aufgabe auditierbar festgehalten
-* der Student kann einmal hochgeladenen Code nicht mehr ändern oder löschen
+* Student kann einmal hochgeladenen Code nicht mehr ändern oder löschen
 
 *Annahme*: Die Prüfung des Quellcodes geht schnell (<60 sek) und der Student bekommt synchron Feedback. So kann er zeitnah Nacharbeiten/Verbesserungen vornehmen und einen erneuten Versuch hochladen
 
@@ -105,7 +105,7 @@ Dies könnte sinngemäss etwa so aussehen:
 ****
 Alle Studenten des Kurses 'Python für Fortgeschrittene - WinterSemester2022' sollen bis 24.9.2022 15:00Uhr die Aufgaben PFF-18, PFF-19 und PFF-20 (referenziert Aufgaben aus `LMS`) lösen. Dabei ist zu beachten:
 
-* Bei Aufgabe PFA-18 bitte nicht mehr als 20 Lines of code und
+* bei Aufgabe PFA-18 bitte nicht mehr als 20 Lines of code und
 * bei PFA-19 eine Lösung mit Rekursion schreiben, d.h. ohne Schleifen (while/for)
 ****
 Im Grunde genommen eine einfache CRUD-Anwendung, d.h. der Professor kann Daten auch nochmal ändern.
@@ -119,5 +119,5 @@ NOTE: Hier ist unklar, wie der Ablauf erfolgen soll. Soll der Auditor Zugang zur
 * Es wird ein Audit von den Auditoren angekündigt (unter Angabe der Rahmenbedingungen, d.h. Audit für den Jahrgang X und / oder alle Studenten, die den Kurs Y besucht haben)
 * Ein Administrator der Anwendung `CheckYourWork` triggert den Export der Audit-Daten
 * Die Audit-Daten werden vom System im EXCEL-Format exportiert und vom Administrator heruntergeladen
-* Der Adminstrator übergibt diese Datei dem Auditor
+* Der Administrator übergibt diese Datei dem Auditor
 * Der Auditor nimmt diese exportierten Daten entgegen und führt das Audit durch

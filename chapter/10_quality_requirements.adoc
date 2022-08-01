@@ -15,7 +15,7 @@
 |Sicherheit
 |Es ist sichergestellt, dass der hochgeladene Code keinen Schaden anrichten oder Daten manipulieren kann.
 
-|Sicherheit
+|Revivionssicherheit
 |Es ist sichergestellt, dass einmal persistierte Daten (insbes. Ergebnisse der Code-Prüfung und Benotung) im Nachhinein nicht manipuliert werden können.
 
 |Benutzerfreundlichkeit

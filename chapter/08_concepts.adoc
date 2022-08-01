@@ -12,7 +12,7 @@ Welche Daten werden ausgetauscht?
 
 *Annahmen*: Im `LMS`
 
-* werden Kursunterlagen und Aufgaben definiert
+* sind Kursunterlagen und Aufgaben hinterlegt
 * sind Studenten und Professoren als Benutzer hinterlegt
 * sind die Studenten ihren Kursen zugeordnet
 * sind die Professoren ihren Kursen zugeordnet
@@ -24,7 +24,7 @@ Welche Daten werden ausgetauscht?
 Abgerufene Informationen:
 
 1. Wenn ein Student sich im `CheckYourWork` anmeldet, wird gegen `LMS` abgefragt, welche Kurse (und die dazugehörigen Aufgaben) dieser Student sehen darf.
-Diese Aufgaben werden dem Studenten aufgelistet.
+Diese Aufgaben werden dem Studenten in der Oberfläche aufgelistet.
 Er kann dann die Aufgabe auswählen, zu der er Quellcode hochladen möchte.
 2. Wenn ein Professor sich im `CheckYourWork` anmeldet, sieht er die Kurse, die er gerade unterrichtet.
 Er kann einen dieser Kurse auswählen und sieht die zu diesem Kurs gehörenden Aufgaben.
@@ -45,14 +45,16 @@ In einem echten Projekt müsste man hier die technischen Details der Schnittstel
 
 === Authentisierung / Autorisierung [[ch08-authentisierung]]
 
-Beim Anmelden an das System `CheckYourWork` wird die Authentisierung gegen `LMS` durchgeführt.
+Beim Anmelden an das System `CheckYourWork` wird die Authentisierung gegen `LMS` durchgeführt ("single sign on").
 So wird vermieden, dass im `CheckYourWork` Informationen redundant zum LMS gehalten werden müssen.
 D.h. Studenten und Professoren können sich am `CheckYourWork` mit derselben Kennung (Benutzername und Passwort) anmelden wie am `LMS`.
 
 Jeder Anwender, der `CheckYourWork` benutzen möchte oder darf, muss vorher im `LMS` registriert sein.
 Dies erscheint plausibel, da sowohl Professoren als auch Studenten sicherlich im `LMS` registriert sind (Immatrikulation, Einschreiben in Kurse, etc.), bevor sie im `CheckYourWork` Aufgaben aufgeben oder lösen werden.
 
-NOTE: Falls diese Daten *nicht* im LMS hinterlegt sind, so sind sie sicherlich in einem anderen System der Universität hinterlegt. Dann wäre dringend zu empfehlen eine Schnittstelle zu diesem System zu erstellen.
+[NOTE]
+Falls diese Daten *nicht* im LMS hinterlegt sind, so sind sie sicherlich in einem anderen System der Universität hinterlegt.
+Dann wäre dringend zu empfehlen eine Schnittstelle zu diesem System zu erstellen.
 
 === interne Plagiatsprüfung [[ch08-interne-plagiatspruefung]]
 
@@ -60,9 +62,14 @@ NOTE: Falls diese Daten *nicht* im LMS hinterlegt sind, so sind sie sicherlich i
 ====
 komplett unklar:
 
-* Es soll gegen andere Lösungen anderer Studenten verglichen werden. Gegen welche Studenten? Nur die des gleichen Kurses? Oder auch gegen die Studenten des Vorjahres, die diesen Kurs besucht haben? Oder gegen den kompletten Lösungspool einer Aufgabe aller Studenten aller Jahre, die jemals diese eine Aufgabe gelöst haben? Je grösser man diesen Pool macht, desto höher die Wahrscheinlichkeit ähnliche Lösungen zu finden, die dann als vermeintliches Plagiat markiert werden.
-* Wie soll aber ein Plagiat erkannt werden? Je kleiner die Aufgabe ("simple programming assignments"), desto ähnlicher sind alle Lösungen. Die Aufgabe "Schreibe eine Funktion, die prüft, ob eine Zahl eine Primzahl ist" wird bei 30 Studenten eines Kurses sicherlich sehr oft sehr ähnlich gelöst. Geht man weitere Jahre zurück, steigt die Wahrscheinlichkeit weiter, eine ähnliche Lösung zu finden.
-* Wie kann man "false positives" vermeiden?
+* Es soll gegen andere Lösungen anderer Studenten verglichen werden. Gegen welche Studenten?
+Nur die des gleichen Kurses? Oder auch gegen die Studenten des Vorjahres, die diesen Kurs besucht haben?
+Oder gegen den kompletten Lösungspool einer Aufgabe aller Studenten aller Jahre, die jemals diese eine Aufgabe gelöst haben?
+Je grösser man diesen Pool macht, desto höher die Wahrscheinlichkeit ähnliche Lösungen zu finden, die dann als vermeintliches Plagiat markiert werden.
+* Wie soll aber ein Plagiat erkannt werden? Je kleiner die Aufgabe ("simple programming assignments"), desto ähnlicher sind alle Lösungen.
+Die Aufgabe "Schreibe eine Funktion, die prüft, ob eine Zahl eine Primzahl ist" wird bei 30 Studenten eines Kurses sicherlich sehr oft sehr ähnlich gelöst.
+Geht man weitere Jahre zurück, steigt die Wahrscheinlichkeit weiter, eine ähnliche Lösung zu finden.
+* Wie kann man "false positives" vermeiden? Also Code, der fälschlicherweise als Plagiat erkannt wird.
 * Wie kann man "false negatives" vermeiden? z.B. haben zwei Studenten zusammengearbeitet und jeweils die selbe Lösung nur mit anderen Variablennamen im Code. Wie kann das erkannt werden?
 * Wie sieht überhaupt so ein Ergebnis einer internen Plagiatsprüfung aus? ("Code 100% identisch zu Codeausführung <id> von Student <student_id> vom <Datum>" ?)
 * evtl optional Kauflösungen evaluieren (das widerspricht aber etwas dem schmalen IT Budget)
@@ -76,8 +83,11 @@ Vorschlag einer denkbaren/kostengünstigen Minimallösung:
 
 * Der hochgeladene Quellcode wird mittels Textvergleich gegen alle in diesem Jahr zu dieser Aufgabe hochgeladenen Quellcodes anderer Studenten verglichen.
 Bei exaktem Match gilt der Quellcode als Plagiat.
-* Um zu viele "false positives" gerade bei kurzen Lösungen zu vermeiden, wird die interne Prüfung erst ab einer Zeilenanzahl von 10 Zeilen durchgeführt.
-(Alternativ: Könnte man auch pro Aufgabe einstellbar machen. D.h. bei manchen Aufgaben, bei denen man eine kurze Lösung erwartet, kann diese Prüfung komplett ausgeschaltet werden)
+* Um zu viele "false positives" gerade bei kurzen Lösungen zu vermeiden,
+wird die interne Prüfung erst ab einer Zeilenanzahl von 10 Zeilen durchgeführt.
+(Alternativ: Könnte man auch pro Aufgabe einstellbar machen.
+D.h. bei manchen Aufgaben, bei denen man eine kurze Lösung erwartet,
+kann diese Prüfung komplett ausgeschaltet werden)
 
 === Codeausführung [[ch08-codeausfuehrung]]
 
@@ -128,30 +138,57 @@ Datenstruktur NoSQL! evtl kurzes Beispiel JSON beschreiben!*
 
 === Auditierbarkeit [[ch08-auditierbarkeit]]
 
-was genau heisst Auditierbar?
--> Revisionssicher, unveränderbar ('immutable'), ohne Referenzen
+Was genau heisst "auditierbar"?
 
-*TODO:*
-
-* evtl Umwandeln von relationalem Datensatz zu Dokumentendatensatz (JSON) und den in NoSQL-DB speichern?
-* eingeschränkte Zugriffsrechte für Datenbank (CRUD ohne U und D)
+"auditierbar" heisst hier Revisionssicher, d.h. korrekt, vollständig und unveränderbar,
+siehe z.B. auch https://de.wikipedia.org/wiki/Revisionssicherheit
 
 ==== Umfang der Daten [[umfang-der-daten]]
 
 Bei jeder(!) Code-Ausführung wird in der Datenbank gespeichert:
 
-* der Quellcode in textueller Form, unverändert, so wie er hochgeladen wurde
-* der Zeitpunkt der Ausführung
-* der Benutzer, der diesen Code hochgeladen hat
-* eine Referenz zur Aufgabe, die dieser Code lösen soll
-* eine Referenz oder ID vom Basis-Image, in dem dieser Code beim ext. Provider lief
-* der Testcode in textueller Form, der zur Prüfung verwendet wurde
-* Inhalt des StdOut während der Ausführung
-* Inhalt des StdErr während der Ausführung
-* Ergebnis der statischen CodeAnalyse (Metrikprüfung)
-* Ergebnis der internen Plagiatsprüfung
-* Ergebnis der externen Plagiatsprüfung
-* die automatisch ermittelte Gesamtbenotung des Code
+.Umfang der gespeicherten Daten
+[cols="3,1"]
+|===
+|Dateninhalt|Form
+
+|der Quellcode in textueller Form, unverändert, so wie er hochgeladen wurde
+|*Text*
+
+|der Zeitpunkt der Ausführung
+|Timestamp
+
+|der Benutzer, der diesen Code hochgeladen hat
+|Benutzer-Id
+
+|eine Referenz zur Aufgabe, die dieser Code lösen soll
+|Aufgaben-Id
+
+|eine Referenz oder ID vom Basis-Image, in dem dieser Code beim ext. Provider lief
+|Id
+
+|der Testcode in textueller Form, der zur Prüfung verwendet wurde
+|*Text*
+
+|Inhalt des StdOut während der Ausführung
+|*Text*
+
+|Inhalt des StdErr während der Ausführung
+|*Text*
+
+|Ergebnis der statischen CodeAnalyse (Metrikprüfung)
+|*Text*
+
+|Ergebnis der internen Plagiatsprüfung
+|*Text*
+
+|Ergebnis der externen Plagiatsprüfung
+|*Text*
+
+|die automatisch ermittelte Gesamtbenotung des Code
+|Zahl
+
+|===
 
 *TODO: Das sind echt viele Daten ...*
 
@@ -166,7 +203,12 @@ Wenn man nur die Referenz speichert, wäre unklar, wie die Metrik mit der ID 132
 
  Metrik mit Metrik-ID 132 (lines of code darf 40 nicht übersteigen) ist verletzt
 
-So ist auditierbar festgehalten, das die Metrik *zum Zeitpunkt der Prüfung* loc < 40 beinhaltete, obwohl sie ggf. heute auf loc < 100 geändert wurde.
+So ist unveränderbar festgehalten, dass die Metrik *zum Zeitpunkt der Prüfung* loc < 40 beinhaltete, obwohl sie ggf. heute auf loc < 100 geändert wurde.
+
+==== Speichern in Dokumentenform
+
+Wie man in <<umfang-der-daten>> erkennen kann, enthält ein gespeicherter Datensatz einer Ausführung sehr viele Informationen im Freitextformat unbekannter Struktur und Grösse (Quellcode und Protokolle der Ausführung und Plagiatsprüfungen).
+Daher wird das Ergebnis einer Ausführung als Dokument in einer Dokumenten-Datenbank gespeichert.
 
 ==== Einschränkung der Zugriffsrechte
 
@@ -175,12 +217,16 @@ Dies wird sichergestellt, in dem der technische Benutzer mit dem die Anwendung a
 
 Also vom "CRUD" (Create - Read - Update - Delete) sind nur C und R erlaubt, U und D nicht.
 
+==== Aufbewahrungsfristen
+
+Um der Revisionssicherheit zu genügen werden die Daten regelmässig archiviert und aufbewahrt.
+Archivierungsfrequenz und Aufbewahrungsdauer sollte im echten Projekt hier aufgeführt werden.
+
 === Metriken [[ch08-metriken]]
 
 [NOTE]
 ====
-*TODO*: externe Lösung prüfen? sonarqube? einfaches RegEx wird evtl nicht ausreichen um Metriken zu prüfen?
-halte ich für sehr schwierig und teuer, wenn man hier ein SonarQube nachbauen möchte.
+*TODO*: Sehr unklarer Punkt, halte ich für sehr schwierig und teuer, wenn man hier ein SonarQube o.ä. nachbauen möchte.
 Es müssten Metriken für jede Programmiersprache (zu der es einen Kurs gibt) aufgenommen werden.
 
 Ein kurzer Blick ins https://sonarcloud.io zeigt dort 650 Regeln für Java, 580 für C++, 222 für Python, etc.
@@ -191,12 +237,17 @@ Ich bezweifle, dass eine Code-Metrik immer nur eine einfache RegEx ist.
 Evtl muss man auch im compilierten Code (AST, Abstract Syntax Tree) Prüfungen machen?
 ====
 
--> Für mich die grösste Unsicherheit im Projekt und das grösste Risiko, siehe <<section-technical-risks>>
+-> Für mich die grösste Unsicherheit im Projekt und das grösste Risiko, siehe <<section-risks>>.
+Hier fällt mir auch keine vernünftige, akzeptable Minimallösung ein.
 
 === Automatische Benotung
 
 [NOTE]
-*TODO*: Wie soll das ablaufen? Wer definiert wo die Regeln? Keine Fehler + keine Metriken verletzt + Plagiatsprüfung negativ == 100 Punkte? Wo gibt es wann wie welchen Punktabzug? Welche Noten gibt es überhaupt?
+*TODO*: Ebenfalls fachlich unklar. Wie soll die Benotung automatisch ablaufen?
+Wer definiert wo die Regeln?
+"Keine Fehler + keine Metriken verletzt + Plagiatsprüfung negativ == 100 Punkte"?
+Wo gibt es wann wie welchen Punktabzug?
+Welche Noten gibt es überhaupt? (0 - 100 Punkte? Schulnoten 1 bis 6? oder amerikanische Noten 'A' bis 'F'?)
 
 Folgende Teilaspekte sind denkbar und müssten in die Benotung einfliessen:
 
@@ -216,7 +267,8 @@ Volle Punktzahl gibt es für die Aufgabe, wenn alle Punkte positiv durchlaufen w
 * [x] Code besteht interne Plagiatsprüfung, d.h. ist *kein* Plagiat
 * [x] Code besteht externe Plagiatsprüfung, d.h. ist *kein* Plagiat
 
-Wie sich das Nicht-Erfüllen eines oder mehrerer Teilaspekte in der Gesamtbenotung der Aufgabe bemerkbar macht, ist offen und kann hier auch nur schwer angenommen werden. (Ist für die Architektur an sich aber auch nicht weiter entscheidend. Das ist Teil der Business-Logic)
+Wie sich das Nicht-Erfüllen eines oder mehrerer Teilaspekte in der Gesamtbenotung der Aufgabe bemerkbar macht, ist offen und kann hier auch nur schwer angenommen werden.
+(Ist für die Architektur an sich aber auch nicht weiter entscheidend. Das ist Teil der Business-Logic.)
 
 === Mengengerüste
 
@@ -260,7 +312,9 @@ Hier einige kurze Abschätzungen:
 
 Bei jeder(!) Code-Ausführung wird ein Datensatz gemäss <<umfang-der-daten>> in der Datenbank gespeichert.
 
-Da aktuell noch fast jeder der o.g. Punkte im groben Planungsstand ist, kann hier noch keine verlässliche Grösse angegeben werden. (Dies sollte aber im weiteren Verlauf der Architekturarbeit noch erfolgen!)
+Da aktuell noch fast jeder der o.g. Punkte im groben Planungsstand ist,
+kann hier noch keine verlässliche Grösse angegeben werden.
+(Dies sollte aber im weiteren Verlauf der Architekturarbeit noch erfolgen!)
 
 ==== Grösse eines Audit-Reports
 

@@ -3,16 +3,18 @@
 
 [NOTE]
 ====
-Die Infrastruktur ist komplett unklar. Im echten Projekt würde man hier weitere Informationen beim Kunden einholen müssen:
+Die Infrastruktur ist komplett unklar.
+Im echten Projekt würde man hier weitere Informationen beim Kunden einholen müssen:
 
-* Gibt es eine Infrastruktur, die mitbenutzt werden kann oder soll?
+* Gibt es Infrastruktur, die mitbenutzt werden kann oder soll?
 * Gibt es Vorgaben bzgl CloudProvidern?
 * Ist externes Hosting erlaubt oder verboten?
 
 Ebenfalls zu klären ist, ob es für den externen Dienst `TurnItIn` eine Testumgebung gibt, welche in der Integrationsumgebung angebunden werden kann.
 ====
 
-*Annahme*: Es gibt interne Infrastruktur bei der Universität. Dort werden Umgebungen bereitgestellt. Das Hosting der externen Sandboxes erfolgt bei AWS.
+*Annahme*: Es gibt interne Infrastruktur bei der Universität. Dort werden Umgebungen bereitgestellt.
+Das Hosting der externen Sandboxes erfolgt bei AWS.
 
 === Umgebungen
 
@@ -33,4 +35,5 @@ Der Code wird in einem Container beim externen CloudProvider compiliert und gest
 Diese Container werden dort "on demand" gestartet, so dass eine gewisse Elastizität gewährleistet ist.
 Bei jedem Code-Upload eines Studenten wird beim CloudProvider eine eigene Container-Instanz hochgefahren.
 
-NOTE: Hier ist mir auch unklar, wie genau so ein Bild aussehen soll. Die bei PlantUML sehen alle komisch aus...
+NOTE: Hier ist mir auch unklar, wie genau so ein Bild aussehen soll.
+Die bei PlantUML sehen alle komisch aus...
