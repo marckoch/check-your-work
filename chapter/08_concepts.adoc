@@ -30,6 +30,10 @@ Er kann dann die Aufgabe auswählen, zu der er Quellcode hochladen möchte.
 Er kann einen dieser Kurse auswählen und sieht die zu diesem Kurs gehörenden Aufgaben.
 Er kann dann zu einer dieser Aufgabe die Abgabekriterien eingeben (Deadline, Metriken, etc.).
 
+*Anmerkung*: Man könnte die Daten aus dem LMS auch regelmässig abziehen und im `CheckYourWork` redundant halten.
+Die Daten aus LMS (Zuordnung Student zu Kurs, Aufgabe zu Kurs, Professor zu Kurs) ändern sich sicherlich nicht täglich und sind fast statischer Natur.
+Hier würde evtl ein nächtlicher Abgleich Sinn machen, um das LMS-System -- bei Bedarf -- zu entlasten.
+
 ==== technische Details
 
 [NOTE]
@@ -189,6 +193,8 @@ Bei jeder(!) Code-Ausführung wird in der Datenbank gespeichert:
 |Zahl
 
 |===
+
+*OFFEN*: unklar, ob man aus Auditierungsgründen wirklich die Ausgabekanäle StdOut und StdErr mit aufzeichnen muss
 
 *TODO: Das sind echt viele Daten ...*
 

@@ -18,7 +18,7 @@ Die Zugriffsrechte auf die Datenbank werden so eingeschränkt,
 dass einmal gespeicherte Datensätze im Nachhinein nicht verändert werden können.
 |<<ch08-auditierbarkeit>>
 
-| Plagiatsprüfung
+|Plagiatsprüfung
 |Die Plagiatsprüfung erfolgt in zwei Stufen: intern und extern.
 Bei der internen Plagiatsprüfung wird die hochgeladene Lösung mit anderen Lösungen zur selben Aufgabe verglichen.
 Bei der externen Plagiatsprüfung wird die Lösung gegen den externen Anbieter `TurnItIn` verglichen.
