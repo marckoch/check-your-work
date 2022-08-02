@@ -4,7 +4,7 @@ Mein Versuch einer Lösung für das Architektur Kata `CheckYourWork`
 
 Aufgabe/kata: siehe kata.md
 
-Lösung/Architektur: siehe architecture.adoc
+Lösung/Architektur: siehe architecture.adoc bzw architecture.pdf
 
 Die Lösung ist in AsciiDoc (https://asciidoc.org/). Ich habe versucht mich am arc42 (https://arc42.org) zu orientieren.
 Diagramme sind mit PlantUML gemacht (https://plantuml.com/)
