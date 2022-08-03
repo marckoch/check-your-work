@@ -9,7 +9,7 @@
 |Image aus dem der BasisContainer/Sandbox gestartet wird
 
 |BasisContainer / Sandbox
-|Containerinstanz beim CloudProvider, strikt von der Umgebung isoliert
+|Containerinstanz beim CloudProvider. Strikt von der Umgebung isoliert, in der die Anwendung `CheckYourWork` läuft.
 
 |Treibercode
 |Code, der den vom Studenten hochgeladenen Code ausruft und auf Korrektheit prüft

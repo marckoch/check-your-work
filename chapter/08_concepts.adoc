@@ -201,15 +201,30 @@ Bei jeder(!) Code-Ausführung wird in der Datenbank gespeichert:
 Diese Daten werden beim Speichern aufgelöst und dupliziert gespeichert, d.h. Referenzen werden aufgelöst, etc.
 So ist sichergestellt, dass nachträgliche Änderungen an z.B. Metriken sich nicht in die persistierten Auditdaten durchschlagen. (Snapshot zum Zeitpunkt der Ausführung)
 
-*Beispiel*: Es werden *keine* Referenzen gespeichert (sinngemäß):
+*Beispiel*: Es werden *keine* Referenzen auf evtl variable andere Datensätze gespeichert. D.h. sinngemäß etwa:
 
  Metrik mit Metrik-ID 132 ist verletzt
 
-Wenn man nur die Referenz speichert, wäre unklar, wie die Metrik mit der ID 132 zum Zeitpunkt der Codeausführung aussah. Diese Referenz wird in aufgelöster Form gespeichert:
+[plantuml, target=referenz-auf-metrik, format=png]
+....
+@startjson
+{
+"datum":"2022-12-12T15:13:00Z",
+"metrik":
+    {
+        "metrik-id": 132,
+        "detail": "lines of code darf maximal sein <parameter>",
+        "parameter": 40
+    }
+}
+@endjson
+....
+
+Wenn man bei der Codeausführung nur die Referenz 132 speichert, wäre unklar, wie die Metrik mit der ID 132 zum Zeitpunkt der Codeausführung aussah. Diese Referenz wird in aufgelöster Form gespeichert:
 
  Metrik mit Metrik-ID 132 (lines of code darf 40 nicht übersteigen) ist verletzt
 
-So ist unveränderbar festgehalten, dass die Metrik *zum Zeitpunkt der Prüfung* loc < 40 beinhaltete, obwohl sie ggf. heute auf loc < 100 geändert wurde.
+So ist unveränderbar festgehalten, dass die Metrik *zum Zeitpunkt der Codeausführung* loc < 40 beinhaltete, obwohl sie ggf. heute auf loc < 100 geändert wurde.
 
 ==== Speichern in Dokumentenform
 

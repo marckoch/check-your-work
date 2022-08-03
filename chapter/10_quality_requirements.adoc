@@ -7,7 +7,8 @@
 |Thema|Begründung
 
 |Verfügbarkeit/Elastizität
-|Ein Student kann jederzeit eine Aufgabe hochladen, d.h. es ist immer eine Sandbox verfügbar. Die Wartezeit auf eine Sandbox beträgt maximal 20 Sekunden
+|Ein Student kann jederzeit eine Aufgabe hochladen, d.h. es ist immer eine Sandbox verfügbar.
+Die Wartezeit auf eine Sandbox beträgt maximal 20 Sekunden
 
 |Performance
 |Die Gesamtzeit für einen Roundtrip (Quellcode hochladen->in Sandbox laufen lassen->dynamische und statische Codeanalyse->Ergebnis einsehen) darf 60 Sekunden nicht überschreiten
@@ -15,10 +16,11 @@
 |Sicherheit
 |Es ist sichergestellt, dass der hochgeladene Code keinen Schaden anrichten oder Daten manipulieren kann.
 
-|Revivionssicherheit
+|Revisionssicherheit
 |Es ist sichergestellt, dass einmal persistierte Daten (insbes. Ergebnisse der Code-Prüfung und Benotung) im Nachhinein nicht manipuliert werden können.
 
 |Benutzerfreundlichkeit
-|Ein Professor kann eine Aufgabe einem Kurs und damit allen Studenten dieses Kurses zuordnen. Es ist nicht akzeptabel, dass ein Professor eine Aufgabe jedem der ca. 30 Studenten eines Kurses einzeln zuordnet.
+|Ein Professor kann eine Aufgabe einem Kurs und damit allen Studenten dieses Kurses zuordnen.
+Es ist nicht akzeptabel, dass ein Professor eine Aufgabe jedem der ca. 30 Studenten eines Kurses einzeln zuordnet.
 
 |===
