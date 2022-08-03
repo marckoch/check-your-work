@@ -1,4 +1,7 @@
 = Architektur Check Your Work
+Marc Koch
+Lösung für Architektur-Kata
+:title-page:
 :note-caption: Hinweis
 :figure-caption: Abbildung
 :table-caption: Tabelle
