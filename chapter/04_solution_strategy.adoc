@@ -5,12 +5,17 @@
 |===
 |Aspekt|Lösung|siehe
 
+|Umsetzung
+|Das System wird als Webanwendung umgesetzt.
+Systemintern werden die verschiedenen Module nach fachlichen Aspekten aufgegliedert.
+|<<Bausteinsicht-C4-Ebene2>>
+
 |Sicherheit
 |Der hochgeladene Quellcode wird bei einem externen CloudProvider in einem eigens dafür provisionierten Container ("Sandbox") compiliert und ausgeführt.
 So ist sichergestellt, dass kein Zugriff von diesem Quellcode auf das Produktivsystem und/oder die Datenbank erfolgen kann.
 |<<ch08-codeausfuehrung>>
 
-|Auditierbarkeit
+|Auditierbarkeit/ Revisionssicherheit
 |Die gespeicherten Daten werden beim Speichern vollumfänglich aufgelöst,
 d.h. sämtliche Referenzen ausgehend vom Hauptdatensatz ("Ausführung") werden aufgelöst
 (Snapshot aller referenzierten Daten zum Zeitpunkt der Codeausführung).
@@ -31,6 +36,6 @@ Daher wird das Ergebnis einer Codeausführung als Document in einer NoSQL-Datenb
 |<<umfang-der-daten>>
 
 |Anmeldung am System / "single sign on"
-|Beim Anmelden ans System `CheckYourWork` wird ein Weiterleiten an `LMS` durchgeführt, d.h. im `CheckYourWork` selber werden keinerlei Benutzerdaten der Anwender gespeichert.
+|Beim Anmelden ans System `CheckYourWork` wird ein Weiterleiten an `LMS` durchgeführt, d.h. im `CheckYourWork` selber werden keinerlei Anmeldedaten der Anwender gespeichert.
 |<<ch08-authentisierung>>
 |===

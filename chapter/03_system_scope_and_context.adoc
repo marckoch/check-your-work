@@ -29,7 +29,6 @@ usecase "Sandbox/Container" as CP.sandbox
 }
 file Auditdaten
 
-
 s ---> LMS.daten : sieht an
 s --> CYW.code : hochladen
 p --> CYW.metriken : definieren
@@ -81,6 +80,14 @@ In einem echten Projekt ist dies Teil der Requirements-Analyse (bzw. Lastenheft 
 
 *Annahme*: Die Prüfung des Quellcodes geht schnell (<60 sek) und der Student bekommt synchron Feedback. So kann er zeitnah Nacharbeiten/Verbesserungen vornehmen und einen erneuten Versuch hochladen
 
+*OFFEN*: Was sieht der Student während der Ausführung und Prüfung seines Codes? 60 Sekunden eine Sanduhr?
+Nicht sehr benutzerfreundlich.
+Bessere Alternativen: Er kann die Prüfung quasi live mitverfolgen
+(wie die Stages in einem Jenkinsbuild in einer Buildpipeline)
+oder die Prüfung läuft komplett asynchron, d.h. er bekommt nach dem Upload eine Meldung
+"Code ist hochgeladen. Ergebnis kommt in wenigen Minuten per Mail"
+und erhält wenige Minuten später die versprochene Mail.
+
 ==== Aus Sicht des Professors
 
 *Annahmen*:
@@ -103,12 +110,17 @@ gelöst werden soll.
 Dies könnte sinngemäss etwa so aussehen:
 
 ****
-Alle Studenten des Kurses 'Python für Fortgeschrittene - WinterSemester2022' sollen bis 24.9.2022 15:00Uhr die Aufgaben PFF-18, PFF-19 und PFF-20 (referenziert Aufgaben aus `LMS`) lösen. Dabei ist zu beachten:
+Alle Studenten des Kurses 'Python für Fortgeschrittene - WinterSemester2022' sollen bis 24.9.2022 15:00 Uhr die Aufgaben PFF-18, PFF-19 und PFF-20 (referenziert Aufgaben aus `LMS`) lösen.
+
+Dabei ist zu beachten:
 
 * bei Aufgabe PFA-18 bitte nicht mehr als 20 Lines of code und
 * bei PFA-19 eine Lösung mit Rekursion schreiben, d.h. ohne Schleifen (while/for)
 ****
-Im Grunde genommen eine einfache CRUD-Anwendung, d.h. der Professor kann Daten auch nochmal ändern.
+
+Im Grunde genommen eine einfache CRUD-Anwendung,
+d.h. der Professor gibt in der Oberfläche Daten ein, welche in der Datenbank gespeichert werden.
+Änderungen/Löschen sind erlaubt.
 
 ==== Aus Sicht des Auditors bzw. des Administrators
 

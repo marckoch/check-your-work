@@ -13,18 +13,14 @@ Hier die Bausteinsicht der Applikation im technischen Kontext (C4 - Ebene 1). Ve
 
 title Context Diagramm für CheckYourWork
 
-Person(Student, Student, "Hochladen von Quellcode")
-Person(Professor, Professor, "Definition der Abgabekriterien")
-Person(Auditor, Auditor + Admin, "Durchführen des Audits")
+Person(user, <<Benutzer>>, Browser)
 
 System(CheckYourWork, "CheckYourWork", "WebApplication")
 System_Ext(LMS, "LMS", "bestehendes System der Universität")
 System_Ext(TurnItIn, "TurnItIn", "Webbasiertes System zur Plagiatsprüfung")
 System_Ext(CloudProvider, "CloudProvider", "Ausführung des Codes in Sandbox-Container")
 
-Rel_D(Student, CheckYourWork, HTTPS)
-Rel_D(Professor, CheckYourWork, HTTPS)
-Rel_D(Auditor, CheckYourWork, HTTPS)
+Rel_D(user, CheckYourWork, HTTPS)
 
 Rel_U(LMS, CheckYourWork, HTTPS)
 BiRel_D(CheckYourWork, TurnItIn, HTTPS)
@@ -35,7 +31,7 @@ SHOW_LEGEND()
 @enduml
 ....
 
-=== Ebene 2
+=== Ebene 2 [[Bausteinsicht-C4-Ebene2]]
 
 Hier ein Überblick über die Teilkomponenten des Systems (C4 - Ebene 2).
 
@@ -48,7 +44,7 @@ Hier ein Überblick über die Teilkomponenten des Systems (C4 - Ebene 2).
 
 title Bausteinsicht für CheckYourWork (Ebene 2)
 
-Person(user, <<Benutzer>>)
+Person(user, <<Benutzer>>, Browser)
 
 System_Boundary(Remote, "CheckYourWork") {
     Container(Core, "Core", "WebApplication")

@@ -3,15 +3,17 @@
 
 === Aufgabenstellung
 
-Mit der Applikation `CheckYourWork` werden einfache Programmieraufgaben automatisch geprüft und bewertet.
-Der Quellcode, der die Programmieraufgabe löst, wird vom Studenten hochgeladen und vom System ausgeführt.
-Ebenfalls erfolgt eine interne und externe Plagiatsprüfung des Quellcodes.
-Der Quellcode, sowie das Ergebnis der Ausführung und die Ergebnisse der Prüfungen werden in auditierbarer Form persistiert.
+* Mit der Applikation `CheckYourWork` werden einfache Programmieraufgaben automatisch geprüft und bewertet.
+* Der Quellcode, der die Programmieraufgabe löst, wird vom Studenten hochgeladen und vom System ausgeführt.
+* Ebenfalls erfolgt eine interne und externe Plagiatsprüfung des Quellcodes.
+* Der Quellcode, sowie das Ergebnis der Ausführung und die Ergebnisse der Prüfungen werden in auditierbarer (revisionssicherer) Form persistiert.
 
 === Verwandte Systeme
 
 Ähnliche Anwendungen gibt es z.B. bei https://hyperskill.org[JetBrainsAcademy], https://www.codewars.com[Codewars], https://www.hackerrank.com[Hackerrank].
+
 Dort kann der Anwender ebenfalls Code hochladen (oder auch -- anders als hier geplant -- im Browser schreiben), welcher dann ebenfalls ausgeführt, geprüft und bewertet wird.
+
 Typische Roundtrip-Zeiten (Quellcode hochladen->Laufen lassen->Ergebnis einsehen) liegen in diesen Anwendungen bei ca. 20-60 Sekunden.
 
 === Qualitätsziele
