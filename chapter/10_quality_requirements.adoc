@@ -1,13 +1,13 @@
 [[section-quality-scenarios]]
 == Qualitätsanforderungen
 
-.Qualitätsanforderungen
+.Qualitätsszenarien
 [cols="1,3"]
 |===
-|Thema|Begründung
+|Merkmal|Szenario
 
-|Verfügbarkeit/Elastizität
-|Ein Student kann jederzeit eine Aufgabe hochladen, d.h. es ist immer eine Sandbox verfügbar.
+|Verfügbarkeit
+|Ein Student kann jederzeit eine Aufgabe hochladen, d.h. es ist immer zeitnah eine Sandbox verfügbar.
 Die Wartezeit auf eine Sandbox beträgt maximal 20 Sekunden
 
 |Performance

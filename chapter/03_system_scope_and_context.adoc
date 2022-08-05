@@ -110,7 +110,9 @@ gelöst werden soll.
 Dies könnte sinngemäss etwa so aussehen:
 
 ****
-Alle Studenten des Kurses 'Python für Fortgeschrittene - WinterSemester2022' sollen bis 24.9.2022 15:00 Uhr die Aufgaben PFF-18, PFF-19 und PFF-20 (referenziert Aufgaben aus `LMS`) lösen.
+Alle Studenten des Kurses 'Python für Fortgeschrittene - WinterSemester2022'
+sollen bis 24.9.2022 15:00 Uhr die Aufgaben PFF-18, PFF-19 und PFF-20
+(referenziert Aufgaben aus `LMS`) lösen.
 
 Dabei ist zu beachten:
 
@@ -118,8 +120,9 @@ Dabei ist zu beachten:
 * bei PFA-19 eine Lösung mit Rekursion schreiben, d.h. ohne Schleifen (while/for)
 ****
 
-Im Grunde genommen eine einfache CRUD-Anwendung,
-d.h. der Professor gibt in der Oberfläche Daten ein, welche in der Datenbank gespeichert werden.
+Im Grunde genommen eine einfache CRUD-Anwendung.
+D.h. der Professor gibt in der Oberfläche Daten ein,
+welche in der Datenbank gespeichert werden.
 Änderungen/Löschen sind erlaubt.
 
 ==== Aus Sicht des Auditors bzw. des Administrators
