@@ -1,5 +1,5 @@
-.Fachlicher Context
-[plantuml, target=fachlicher-context, format=png]
+.Qualitätsbaum
+[plantuml, target=Qualitätsbaum, format=png]
 ....
 @startmindmap
 * Software Product Quality
